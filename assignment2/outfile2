@@ -1,0 +1,120 @@
+//Lorin Vandegrift
+//File 2 of 2
+
+enter main
+&argc=ff9fde90 argv=ff9fdf24 env=ff9fdf38
+&a=ff9fde74    &b=ff9fde78   &c=ff9fde7c
+enter A
+&d=ff9fde44, &e=ff9fde48, &f=ff9fde4c
+enter B
+&g=ff9fde14, &h=ff9fde18, &i=ff9fde1c
+enter C
+&u=ff9fddd8, &v=ff9fdddc, &w=ff9fdde0
+&ebp= ff9fddf8 -> ff9fde28 ->ff9fde58 ->ff9fde88
+
+Address		Contents		
+
+ff9fde0c	ff9fde0c
+ff9fde10	5574bac0
+ff9fde14	       6
+ff9fde18	       7
+ff9fde1c	       8
+ff9fde20	       0
+ff9fde24	       0
+ff9fde28	ff9fde58
+ff9fde2c	 804853b
+ff9fde30	       3
+ff9fde34	       4
+ff9fde38	ff9fde48
+ff9fde3c	ff9fde4c
+ff9fde40	5574bac0
+ff9fde44	       3
+ff9fde48	       4
+ff9fde4c	       5
+ff9fde50	ff9fde90
+ff9fde54	55576938
+ff9fde58	ff9fde88
+ff9fde5c	 80484d3
+ff9fde60	       1
+ff9fde64	       2
+ff9fde68	ff9fde78
+ff9fde6c	ff9fde7c
+ff9fde70	5574b3c4
+ff9fde74	       1
+ff9fde78	       2
+ff9fde7c	       3
+ff9fde80	 80486c0
+ff9fde84	       0
+ff9fde88	       0
+ff9fde8c	555bca63
+ff9fde90	       4	//Argc - File name and three parameters
+ff9fde94	ff9fdf24	//Argv Pointer
+ff9fde98	ff9fdf38	//Env Pointer
+ff9fde9c	55563cea
+ff9fdea0	       4
+ff9fdea4	ff9fdf24	//Argv Pointer
+ff9fdea8	ff9fdec4
+ff9fdeac	 804a018
+ff9fdeb0	 804822c
+ff9fdeb4	5574b000
+ff9fdeb8	       0
+ff9fdebc	       0
+ff9fdec0	       0
+ff9fdec4	ebf67b36
+ff9fdec8	63df1e63
+ff9fdecc	       0
+ff9fded0	       0
+ff9fded4	       0
+ff9fded8	       4
+ff9fdedc	 8048350
+ff9fdee0	       0
+ff9fdee4	55569500
+ff9fdee8	555bc979
+ff9fdeec	55576000
+ff9fdef0	       4
+ff9fdef4	 8048350
+ff9fdef8	       0
+ff9fdefc	 8048371
+ff9fdf00	 804844d
+ff9fdf04	       4
+ff9fdf08	ff9fdf24	//Argv pointer
+ff9fdf0c	 80486c0
+ff9fdf10	 8048730
+ff9fdf14	55564180
+ff9fdf18	ff9fdf1c
+ff9fdf1c	      1c
+ff9fdf20	       4
+ff9fdf24	ff9fed76	//Argv pointer
+ff9fdf28	ff9fed7e
+ff9fdf2c	ff9fed82
+ff9fdf30	ff9fed86
+ff9fdf34	       0
+ff9fdf38	ff9fed8c	//Env Pointer
+ff9fdf3c	ff9fedac
+ff9fdf40	ff9fedc3
+ff9fdf44	ff9fede6
+ff9fdf48	ff9fedf8
+ff9fdf4c	ff9fee04
+ff9fdf50	ff9fee13
+ff9fdf54	ff9fee28
+ff9fdf58	ff9fee37
+ff9fdf5c	ff9fee75
+ff9fdf60	ff9fee92
+ff9fdf64	ff9feeb6
+ff9fdf68	ff9fef57
+ff9fdf6c	ff9fef5f
+ff9fdf70	ff9fefb7
+ff9fdf74	ff9fefc9
+ff9fdf78	ff9fefe3
+ff9fdf7c	ff9feff5
+ff9fdf80	ff9ff00c
+ff9fdf84	ff9ff03b
+ff9fdf88	ff9ff06f
+ff9fdf8c	ff9ff07e
+ff9fdf90	ff9ff0ba
+ff9fdf94	ff9ff0c5
+ff9fdf98	ff9ff0de
+exit C
+exit B
+exit A
+exit main

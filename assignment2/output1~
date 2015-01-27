@@ -1,0 +1,117 @@
+enter main
+&argc=ffb61a30 argv=ffb61ac4 env=ffb61acc
+&a=ffb61a14    &b=ffb61a18   &c=ffb61a1c
+enter A
+&d=ffb619e4, &e=ffb619e8, &f=ffb619ec
+enter B
+&g=ffb619b4, &h=ffb619b8, &i=ffb619bc
+enter C
+&u=ffb61978, &v=ffb6197c, &w=ffb61980
+&ebp= ffb61998 -> ffb619c8 ->ffb619f8 ->ffb61a28
+
+Address		Contents		
+
+ffb619ac	ffb619ac
+ffb619b0	5574bac0
+ffb619b4	       6	//Local Variable g
+ffb619b8	       7	//Local Variable h
+ffb619bc	       8	//Local Variable i
+ffb619c0	       0
+ffb619c4	       0
+ffb619c8	ffb619f8
+ffb619cc	 804853b
+ffb619d0	       3	
+ffb619d4	       4	 
+ffb619d8	ffb619e8
+ffb619dc	ffb619ec
+ffb619e0	5574bac0
+ffb619e4	       3	//Local Variable d
+ffb619e8	       4	//Local Variable e
+ffb619ec	       5	//Local Variable f
+ffb619f0	ffb61a30
+ffb619f4	55576938
+ffb619f8	ffb61a28
+ffb619fc	 80484d3
+ffb61a00	       1
+ffb61a04	       2
+ffb61a08	ffb61a18
+ffb61a0c	ffb61a1c
+ffb61a10	5574b3c4
+ffb61a14	       1
+ffb61a18	       2
+ffb61a1c	       3
+ffb61a20	 80486c0
+ffb61a24	       0
+ffb61a28	       0
+ffb61a2c	555bca63
+ffb61a30	       1	//Argv - Number of arguments
+ffb61a34	ffb61ac4
+ffb61a38	ffb61acc
+ffb61a3c	55563cea
+ffb61a40	       1
+ffb61a44	ffb61ac4
+ffb61a48	ffb61a64
+ffb61a4c	 804a018
+ffb61a50	 804822c
+ffb61a54	5574b000
+ffb61a58	       0
+ffb61a5c	       0
+ffb61a60	       0
+ffb61a64	eaba65e5
+ffb61a68	311a40b0
+ffb61a6c	       0
+ffb61a70	       0
+ffb61a74	       0
+ffb61a78	       1
+ffb61a7c	 8048350
+ffb61a80	       0
+ffb61a84	55569500
+ffb61a88	555bc979
+ffb61a8c	55576000
+ffb61a90	       1
+ffb61a94	 8048350
+ffb61a98	       0
+ffb61a9c	 8048371
+ffb61aa0	 804844d
+ffb61aa4	       1
+ffb61aa8	ffb61ac4
+ffb61aac	 80486c0
+ffb61ab0	 8048730
+ffb61ab4	55564180
+ffb61ab8	ffb61abc
+ffb61abc	      1c
+ffb61ac0	       1
+ffb61ac4	ffb61d84	//Argv
+ffb61ac8	       0
+ffb61acc	ffb61d8c
+ffb61ad0	ffb61dac
+ffb61ad4	ffb61dc3
+ffb61ad8	ffb61de6
+ffb61adc	ffb61df8
+ffb61ae0	ffb61e04
+ffb61ae4	ffb61e13
+ffb61ae8	ffb61e28
+ffb61aec	ffb61e37
+ffb61af0	ffb61e75
+ffb61af4	ffb61e92
+ffb61af8	ffb61eb6
+ffb61afc	ffb61f57
+ffb61b00	ffb61f5f
+ffb61b04	ffb61fb7
+ffb61b08	ffb61fc9
+ffb61b0c	ffb61fe3
+ffb61b10	ffb61ff5
+ffb61b14	ffb6200c
+ffb61b18	ffb6203b
+ffb61b1c	ffb6206f
+ffb61b20	ffb6207e
+ffb61b24	ffb620ba
+ffb61b28	ffb620c5
+ffb61b2c	ffb620de
+ffb61b30	ffb62134
+ffb61b34	ffb6214d
+ffb61b38	ffb6216f
+exit C
+exit B
+exit A
+exit main
