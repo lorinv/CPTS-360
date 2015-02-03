@@ -1,5 +1,5 @@
 #include<stdio.h>
-#
+#include<stdlib.h>
 
 #define N 100
 
@@ -10,78 +10,92 @@ typedef struct node{
   int priority;
 }NODE;
 
-NODE node[N], *freeList, *readyQueue;
+NODE nodes[N], *freeList, *readyQueue;
 
 int init()
 {
-	strcpy(node[0].name, "node");
-	strcpy(node[0].name, 0);
-	node[0].id = 0;
-	node[0].priority = 0;
-	*freeList = node[0];
-	NODE *temp = *freeList;
-	
+	int i;
 	//(1). each node[i]'s name=nodei; id = i; priority = 0;
-	for (int i = 1; i < N; i++)
+	for (i = 0; i < N; i++)
 	{
-		strcpy(node[i].name, "node");
-		strcpy(node[i].name, i);
-		node[i].id = i;
-		node[i].priority = 0;
-		
-		*temp = temp->next; 
+		sprintf(nodes[i].name, "node%d", i);
+		nodes[i].id = i;
+		nodes[i].priority = 0;
 	}
-	//(2). all N nodes are in the freeList;    
+
+	//(2). all N nodes are in the freeList;
+	freeList = nodes;
+
 	//(3). readyQueue = 0;
+	readyQueue = 0;
 }
 
 //Enters the node pointed by p into queue BY PRIORITY
 int enqueue(NODE **queue, NODE *p)
 {
-	NODE *temp = queue;
-	while (temp->next != '\0' || p->priority <= temp->next.priority)
+	NODE *temp, *temp2;
+	if (*queue == NULL)
 	{
-		temp = temp->next;
+		*queue = p;
 	}
-
-	Node *temp2 = temp->next;
-	temp->next = *p;
-	p->next = temp2;
+	else
+	{
+		temp = *queue;
+		while (1)
+		{
+			if (temp->next == NULL || temp->priority > p->priority)
+			{
+				if (p->priority < temp->priority)
+				{
+					*queue = p;
+					p->next = temp;
+				}
+				else
+				{
+					temp->next = p;
+				}
+			return 1;
+			} 
+			if ((temp->next)->priority <= p->priority)
+			{
+				temp=temp->next;
+			}
+			else
+			{
+				temp2 = temp->next;
+				p->next = temp2;
+				temp->next = p;
+				return 1;
+			}
+		}
+	}
 }
 
 //Removes the node pointed with the HIGHEST priority and returns
 //its pointer
-PROC *dequeue(NODE **queue)
+NODE *dequeue(NODE **queue)
 {
-	Node *temp = queue;
-	Node *highest = queue;
+	NODE *temp;
+	NODE *highest = queue;
 	int hPriority = 0;
 
-	//Find the node
-	while (temp != '\0')
+	if (*queue == NULL)
 	{
-		if (temp->priority > hpriority)
-		{
-			highest = temp;
-			hPriority = highest->priority;
-		}
-		temp = temp->next;
+		return;
 	}
 
-	//Remove the Node
-	Node *temp2 = highest->next;
-	//I need to get the node before and after the highest node
-
+	temp = highest->next;
+	*queue = temp;
+	return highest;
 }
 
 //Prints the node contents of the queue
 int printQueue(NODE *queue)
 {
-	Node *temp = queue;
-	while (temp != '\0')
+	NODE *temp = queue;
+	while (temp != NULL)
 	{
-		printf("Name: %s\n Id: %d\n Priority: %d\n", 
-			temp->name, temp->id, temp->priority)
+		printf("Name: %s\n Id: %d\n Priority: %d\n", temp->name, temp->id, temp->priority);
 		temp = temp->next;
 	}
 }
@@ -90,25 +104,58 @@ int printQueue(NODE *queue)
 //the queue if necessary
 int changePriority(NODE **queue, char *name, int priority)
 {
-	Node *temp = queue;
-	//Comparing Arrays???? --------
-	while (temp != '\0' || temp->name == name)
+	NODE *temp=queue;
+	NODE *temp2=temp;
+	while(temp != NULL)
 	{
-		
+		if(strcmp(temp->name , name) == 0)
+		{
+			temp->priority = priority;
+			if(current!=temp)
+			{
+				temp2->next=temp->next;
+				enqueue(queue,temp);
+			}
+			else
+			{
+				temp=temp->next;
+				enqueue(queue,temp);
+			}
+			return 1;
+		}
+		temp2=temp;
+		temp=temp->next;
 	}
 }
 
 void main()
 {
+  init();
+  int choice = 1, index = 0;;
   while(1){
-    ask for a command = add |delete |chPriority 
-
-    add: get a free node; 
-         node's priority = rand() % 7; 
-         enter node into readyQueue;
-         print readyQueue BEFORE and AFTER add;
- 
-   delete: NODE *p = dequene(&readyQueue);
+	// ask for a command = add |delete |chPriority 
+	printf("Please Select Command:\n 1. Add\n 2. Delete\n 3. chPriority\n");
+	scanf("%d", &choice);
+	if (choice == 1)
+	{
+		NODE *freeNode = &nodes[index];
+		index++;
+		freeNode->priority = rand() % 7;
+		enqueue(&readyQueue, freeNode);
+		printQueue(readyQueue);
+	}
+	else if (choice == 2)
+	{ 
+		  NODE *p = dequeue(&readyQueue);
+		  NODE *temp = freeList;
+		  while (temp)
+		  {
+				temp = temp->next;			
+		  }
+		  temp = p;
+		  printQueue(readyQueue);
+	}
+	/*	
            enter p into freeList;
            print readyQueue BEFORE and AFTER delete;
 
@@ -116,5 +163,6 @@ void main()
                     call YOUR changePriority() to change the priority of
                     the node with NAME to newPriority;
                     as usual, print readyQueue both BEFORE and AFTER;
+	*/
    }
 }
