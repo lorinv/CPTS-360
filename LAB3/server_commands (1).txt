@@ -1,0 +1,298 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <fcntl.h>
+#include <string.h>
+#include <sys/stat.h>
+#include <errno.h>
+#include <dirent.h>
+#include <libgen.h>
+#include <time.h>
+
+#include <sys/socket.h>
+#include <netdb.h>
+
+#define MAX 4096
+
+// Commands neeeded:
+// pwd
+// ls   [pathname]
+// cd    pathname
+// mkdir pathname
+// rmdir pathname       
+// rm    pathname       (rm pathname)
+// get   pathname       (cp pathname to client side)
+// put   pathname       (cp pathanme to server side)
+// quit                 (Client exits)
+
+struct stat mystat, *sp;
+
+char *t1 = "xwrxwrxwr-------";
+char *t2 = "----------------";
+
+int mypwd(char *result)
+{
+    char buf[MAX];
+    int r;
+
+    getcwd(buf, MAX);
+
+    strcpy(result, buf);
+
+    return 0;
+}
+
+int myls(char *filename, char *result)
+{
+	struct stat mystat, *sp;
+	int r;
+	char *s;
+	char name[1024], cwd[1024];
+
+	s = filename;
+    if(filename == NULL || filename[0] == '\0')
+		s = "./";
+
+	sp = &mystat;
+	if (r = lstat(s, sp) < 0)
+	{
+		//sprintf(result, "no such file %s\n", s);
+		return -1;
+	}
+	strcpy(name, s);
+	if (s[0] != '/')
+	{    
+		//name is relative : get CWD path
+		getcwd(cwd, 1024);
+		strcpy(name, cwd); strcat(name, "/"); strcat(name,s);
+        printf("cwd: %s\n", cwd);
+	}
+	if (S_ISDIR(sp->st_mode))
+    {
+		ls_dir(name, result);
+    }
+	else
+    {
+		ls_file(name, result);
+    }
+}
+
+int mycd(char *pathname, char *result)
+{
+    if(chdir(pathname) < 0)
+    {
+        sprintf(result, "errno=%d : %s\n\n", errno, strerror(errno));
+        return errno;
+    }
+
+    else
+    {
+        sprintf(result, "cd to ");
+        strcat(result, pathname); 
+    }
+
+    return 0;
+}
+
+int mymkdir(char *pathname, char *result)
+{
+    if(mkdir(pathname, 0755) < 0)
+    {
+        sprintf(result, "errno=%d : %s\n\n", errno, strerror(errno));
+        return errno;
+    }
+
+    sprintf(result, "END mkdir\n");
+
+    return 0;
+}
+
+int myrmdir(char *pathname, char *result)
+{
+    if(rmdir(pathname) < 0)
+    {
+        sprintf(result, "errno=%d : %s\n\n", errno, strerror(errno));
+        return errno;
+    }
+
+    sprintf(result, "END rmdir\n");
+
+    return 0;
+}
+
+int myrm(char *pathname, char *result)
+{
+    if(remove(pathname) < 0)
+    {
+        sprintf(result, "errno=%d : %s\n\n", errno, strerror(errno));
+        return errno;
+    }
+
+    sprintf(result, "END rm\n");
+
+    return 0;
+}
+
+/*
+int mycat(char *filename, char *result)
+{
+	int fd;
+	int i, n;
+	char buf[1024];
+
+	fd = open(filename, O_RDONLY);
+	if (fd < 0) return -1;
+
+	while (n = read(fd, buf, 1024))
+	{
+        strncat(result, buf, n);
+	}
+
+	return 0;
+}
+*/
+
+int mycp(char *src_filename, char *dest_filename, char *result)
+{
+	int src_fd;
+	int dest_fd;
+	int i, n;
+	int total = 0;
+	char buf[1024];
+
+	src_fd = open(src_filename, O_RDONLY);
+	if (src_fd < 0) return -1;
+
+	dest_fd = open(dest_filename, O_WRONLY|O_CREAT|O_TRUNC, 0644);
+	if (dest_fd < 0) return -1;
+
+	while (n = read(src_fd, buf, 1024))
+	{
+		write(dest_fd, buf, n);
+		total += n;
+	}
+
+	close(src_fd);
+	close(dest_fd);
+
+	return total;
+}
+
+int ls_file(char *fname, char *result)
+{
+	struct stat fstat, *sp;
+	int r, i;
+	char ftime[64];
+	char linkname[128];
+    char temp[256];
+
+	sp = &fstat;
+	//printf("name=%s\n", fname); getchar();
+
+	if ((r = lstat(fname, &fstat)) < 0)
+	{
+        strcat(result, "can't stat ");
+        strcat(result, fname);
+        strcat(result, "\n");
+		return;
+	}
+
+	if ((sp->st_mode & 0xF000) == 0x8000)
+		strcat(result, "-");
+	if ((sp->st_mode & 0xF000) == 0x4000)
+		strcat(result, "d");
+	if ((sp->st_mode & 0xF000) == 0xA000)
+        strcat(result, "l");
+
+	for (i=8; i >= 0; i--)
+	{
+		if (sp->st_mode & (1 << i))
+        {
+            sprintf(temp, "%c", t1[i]);
+            strcat(result, temp);
+        }
+		else
+        {
+            sprintf(temp, "%c", t2[i]);
+            strcat(result, temp);
+        }
+	}
+
+	sprintf(temp, "%4d ",sp->st_nlink);
+    strcat(result, temp);
+	sprintf(temp, "%4d ",sp->st_gid);
+    strcat(result, temp);
+	sprintf(temp, "%4d ",sp->st_uid);
+    strcat(result, temp);
+	sprintf(temp, "%8d ",sp->st_size);
+    strcat(result, temp);
+
+    // print time
+	strcpy(ftime, ctime(&sp->st_ctime));
+	ftime[strlen(ftime)-1] = 0;
+	sprintf(temp, "%s  ", ftime);
+    strcat(result, temp);
+
+	// print name
+	sprintf(temp, "%s", basename(fname));  
+    strcat(result, temp);
+
+	// print -> linkname if it's a symbolic file
+	if ((sp->st_mode & 0xF000)== 0xA000)
+	{ 
+		readlink(fname, linkname, 128);
+		sprintf(temp, " -> %s", linkname);
+        strcat(result, temp);
+	}
+	strcat(result, "\n");
+}
+
+int ls_dir(char *dname, char *result)
+{
+	struct DIR *d;
+	struct dirent *t;
+    char filename[256];
+
+	if((d = opendir(dname)) == 0)
+	{
+		return 0;
+	}
+
+	while((t = readdir(d)) != NULL)
+	{
+        strcpy(filename, dname);
+        strcat(filename, "/");
+        strcat(filename, t->d_name);
+		ls_file(filename, result);
+	}
+
+	closedir(d);
+}
+
+int send_file(char *pathname, int sock)
+{
+	struct stat fstat, *sp;
+	int r, n, fd;
+    int size;
+    char buf[MAX];
+
+	sp = &fstat;
+	if ((r = lstat(pathname, &fstat)) < 0)
+	{
+		return;
+	}
+
+    size = sp->st_size;
+
+    fd = open(pathname, O_RDONLY);
+
+    write(sock, &size, sizeof(size));
+
+    while(n = read(fd, buf, MAX))
+    {
+        write(sock, buf, n);
+    }
+
+    close(fd);
+
+    return 0;
+}

@@ -1,0 +1,77 @@
+Output of super.c:
+
+s_magic = ef53
+EXT2 FS OK
+s_inodes_count = 184
+s_blocks_count = 1440
+s_free_inodes_count = 173
+s_free_blocks_count = 1393
+s_first_data_blcok = 1
+s_log_block_size = 0
+s_log_frag_size = 0
+s_blocks_per_group = 8192
+s_frags_per_group = 8192
+s_inodes_per_group = 184
+s_mnt_count = 0
+s_max_mnt_count = -1
+s_magic = ef53
+s_mtime = Wed Dec 31 16:00:00 1969
+s_wtime = Thu Mar 26 11:09:41 2015
+
+----------------------
+
+Block #5 is where the Inodes begin, it's the Inodes block:
+
+In unix, every file is represened by a UNIQUE inode structure of 128 bytes in the EXT2 file system.
+
+Superblock, group descriptor, etc - There to find things.
+Inodes - represent file, Info about the file, size, location, etc.
+Rest of hard drive is data blocks : stores the actual content of the files. 
+Given a path to the file, use the Inode to find the data blocks and print 
+
+Every block has block of block number. HDD is divided into blocks of 1024 bytes. Print out which block numbers correspond to that file. 
+
+------
+Given system args
+get_block: gets block on hard drive 
+	int fd = open will open the disk and give you a file descriptor which is an int.
+	int blk = block number found from Inodes
+	char buf = holds 1024 bytes that are in a block
+------
+
+1.
+-----
+	Read in superblock using the readblock function.
+	you read in a buffer of 1024 bytes and then type cast to 
+	a superblock. Get superblock pointer and point it at the
+	buf. In the struct, there is a int called magicnumber which
+	corresponds to the type of file system.
+	Print other things.	
+-----
+
+2.
+-----
+	Seems easier.
+-----
+
+3.
+----
+	
+----
+
+4.
+-----
+
+-----
+
+5.
+----
+	Use an Inode to find root's datablock
+	In that datablock is the Inode number for the directories in root
+	use the inodes to find the next directory
+	use DIR *dp to go throught the data block of the iNode
+----
+
+---
+	repeat the above process until you have found the file you are looking for. When that file is found, print out it's datablock numbers.
+---

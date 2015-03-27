@@ -10,12 +10,40 @@ typedef struct {
     char *value;
 } ENTRY;
 
+char buffer[4096];
 ENTRY entry[MAX];
+
+char * checkRelPath (char * cwd, char * value)
+{
+	char * tempDir = cwd;	
+
+	//Check if relative to root
+	if (value[0] == '/')
+	{
+		tempDir = value;
+	}
+	// Path is relative to current dir	    
+	else
+	{
+		strcat(tempDir,"/");
+		strcat(temp, value);
+	}
+
+	return tempDir;
+}
 
 main(int argc, char *argv[]) 
 {
   int i, m, r;
   char cwd[128];
+
+  //Variables I added
+  char * tempDir = cwd;
+  char * tempDir2 = cwd;
+  FILE * readFile;
+  FILE * readFile2;
+  char readChar;
+  int check;
 
   m = getinputs();    // get user inputs name=value into entry[ ]
   getcwd(cwd, 128);   // get CWD pathname
@@ -30,11 +58,97 @@ main(int argc, char *argv[])
      printf("%s = %s<p>", entry[i].name, entry[i].value);
   printf("<p>");
 
-  //Preform mkdir command
-  if strcmp(entry[0].name, "mkdir")
+  //Perform mkdir command
+  if (!strcmp(entry[0].name, "mkdir"))
   {
-     
+	printf("WORKING!!!");	
+	//Check if relative to root
+	//tempDir = checkRelPath (cwd, entry[1].value)
+	//mkdir(tempDir,0755);
   }
+
+  //Perform rmdir command
+  else if !strcmp(entry[0].name, "rmdir")
+  {
+	//Check if relative to root
+	tempDir = checkRelPath (cwd, entry[1].value)
+    rmdir(tempDir);
+  }
+
+  //Perform rm command
+  else if !strcmp(entry[0].name, "rm")
+  {
+	//Check if relative to root
+	tempDir = checkRelPath (cwd, entry[1].value)
+	unlink(tempDir);
+  }
+ 
+  //Perform cat command
+  else if !strcmp(entry[0].name, "cat")
+  {
+	//Prepare file to display
+	tempDir = checkRelPath (cwd, entry[1].value)
+	readFile = fopen(tempDir, "r");
+	if (readFile != NULL)
+	{
+		readChar = fgetc(readFile);
+		while (readChar != EOF)
+f		{
+			//Check for new line
+			if (readChar == '\n')
+				printf("<br>");
+			else
+				printf("%c", readChar);
+			readChar = fgetc(readFile);
+		}
+	}
+	fclose(readFile);
+  }
+
+  //Perform cp command
+  else if !strcmp(entry[0].name, "cp")
+  {
+	//Check if relative to root
+	tempDir = checkRelPath (cwd, entry[1].value)
+	tempDir2 = checkRelPath (cwd, entry[2].value)
+	readFile = fopen(tempDir, "r");
+	readFile2 = fopen(tempDir2, "w");
+	if (readFile != NULL && readFile2 != NULL)
+	{
+	  check = fread(buffer, 1, 4096, readFile)
+	  while(check)
+	  {
+	      fwrite(buffer, 1, check, readFile2);
+	      total += check;
+		  check = fread(buffer, 1, 4096, readFile)
+	  }
+	}
+	fclose (readFile);
+	fclose (readFile2);
+  }
+
+  //Perform ls command
+  else if !strcmp(entry[0].name, "ls")
+  {
+	//Check if relative to root
+	tempDir = checkRelPath (cwd, entry[1].value)
+    DIR *dirHandle = NULL;
+	struct dirent *dptr = NULL;
+	dirHandle = opendir(tempDir);
+	if (dirHandle != NULL)
+	{
+		dptr = readdir(dirHandle);
+		for(i=0; dptr != NULL; i++)
+		{
+			printf("%s ",dptr->d_name);
+			dptr = readdir(dirHandle);
+		}
+	    printf("<br>");
+	}
+	
+  }
+
+
 
   /*****************************************************************
    Write YOUR C code here to processs the command

@@ -1,0 +1,218 @@
+//**************************** ECHO CLIENT CODE **************************
+// The echo client client.c
+
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <dirent.h>
+#include <sys/socket.h>
+#include <netdb.h>
+#include <fcntl.h>
+#include <sys/stat.h>
+//#define MAX 256
+#include "server_commands.h"
+
+// Define variables
+struct hostent *hp;
+struct sockaddr_in  server_addr;
+
+int sock, r;
+int SERVER_IP, SERVER_PORT;
+
+char * checkRelPath (char * cwd, char * value)
+{
+    char * tempDir = cwd;
+
+    //Check if relative to root
+    if (value[0] == '/')
+    {
+        tempDir = value;
+    }
+    // Path is relative to current dir
+    else
+    {
+        strcat(tempDir,"/");
+        strcat(tempDir, value);
+    }
+
+    return tempDir;
+}
+
+// clinet initialization code
+
+int client_init(char *argv[])
+{
+    printf("======= clinet init ==========\n");
+
+    printf("1 : get server info\n");
+    hp = gethostbyname(argv[1]);
+    if (hp==0){
+        printf("unknown host %s\n", argv[1]);
+        exit(1);
+    }
+
+    SERVER_IP   = *(long *)hp->h_addr;
+    SERVER_PORT = atoi(argv[2]);
+
+    printf("2 : create a TCP socket\n");
+    sock = socket(AF_INET, SOCK_STREAM, 0);
+    if (sock<0){
+        printf("socket call failed\n");
+        exit(2);
+    }
+
+    printf("3 : fill server_addr with server's IP and PORT#\n");
+    server_addr.sin_family = AF_INET;
+    server_addr.sin_addr.s_addr = SERVER_IP;
+    server_addr.sin_port = htons(SERVER_PORT);
+
+    // Connect to server
+    printf("4 : connecting to server ....\n");
+    r = connect(sock, (struct sockaddr *)&server_addr, sizeof(server_addr));
+    if (r < 0){
+        printf("connect failed\n");
+        exit(1);
+    }
+
+    printf("5 : connected OK to \007\n");
+    printf("---------------------------------------------------------\n");
+    //printf("hostname=%s  IP=%s  PORT=%d\n", hp->h_name, inet_ntoa(server_addr.sin_addr), SERVER_PORT);
+    printf("---------------------------------------------------------\n");
+
+    printf("========= init done ==========\n");
+}
+
+main(int argc, char *argv[ ])
+{
+    int n;
+    char line[MAX], ans[MAX];
+
+    int i, m, r;
+    char cwd[128];
+    char * pch;
+
+    //Variables I added
+    char * tempDir = cwd;
+    char * tempDir2 = cwd;
+    FILE * readFile;
+    FILE * readFile2;
+    char readChar;
+    int check;
+    char temp[MAX];
+
+    char entries[10][MAX];
+
+    char cmd[128];
+    char pathname[1024];
+
+    if (argc < 3){
+        printf("Usage : client ServerName SeverPort\n");
+        exit(1);
+    }
+
+    client_init(argv);
+    getcwd(cwd, 128);   // get CWD pathname
+
+    ///////////////////////////// READ COMMAND ////////////////////
+
+    printf("********  processing loop  *********\n");
+    while (1){
+        printf("Enter a Command : ");
+        bzero(line, MAX);                // zero out line[ ]
+        fgets(line, MAX, stdin);         // get a line (end with \n) from stdin
+        line[strlen(line) - 1] = 0;
+
+        //line[strlen(line)-1] = 0;        // kill \n at end
+        if (line[0]==0)                  // exit if NULL line
+            exit(0);
+
+        //////////////// PARSE STRING ////////////////////////
+
+        //Preform the operiation locally
+        bzero(cmd, 128);
+        bzero(pathname, 1024);
+
+        strcpy(temp, line);
+        if(strchr(line, ' ') != NULL)
+        {
+            pch = strtok(line, " "); // CMD
+            strcpy(cmd, pch);
+            pch = strtok(NULL, " "); // Pathname
+            strcpy(pathname, pch);
+            strcpy(entries[0], cmd);
+            strcpy(entries[1], pathname);
+        }
+        else
+        {
+            strcpy(cmd, line);
+            strcpy(entries[0], cmd);
+        }
+        strcpy(line, temp);
+
+        /////////////////// CHECK FOR LOCAL COMMANDS //////////////
+
+        char result[MAX];
+
+        bzero(result, MAX);
+        if (!strcmp(entries[0], "lpwd"))
+        {
+            mypwd (result);
+            printf ("%s", result);
+        }
+        else if (!strcmp(entries[0], "lls"))
+        {
+            myls(0, result);
+            printf("%s", result);
+        }
+        else if (!strcmp(entries[0], "lcd"))
+        {
+            tempDir = checkRelPath (cwd, entries[1]);
+            mycd (tempDir, result);
+            printf("%s", result);
+        }
+        else if (!strcmp(entries[0], "lmkdir"))
+        {
+            tempDir = checkRelPath (cwd, entries[1]);
+            mymkdir (tempDir, result);
+            printf("%s", result);
+        }
+        else if (!strcmp(entries[0], "lrmdir"))
+        {
+            tempDir = checkRelPath (cwd, entries[1]);
+            myrmdir(tempDir, result);
+            printf("%s", result);
+        }
+        else if (!strcmp(entries[0], "lrm"))
+        {
+            tempDir = checkRelPath (cwd, entries[1]);
+            myrm (tempDir, result);
+            printf("%s", result);
+        }
+        else
+        {
+            /*	//Get
+                else if (!strcmp(entries[0], "get"))
+                {
+                tempDir = checkRelPath (cwd, entries[1]);
+                int han, han2;
+                int totalBytes, n;
+                int size;
+                char buf[BLKSIZE];
+
+                han = open(tempDir, O_WRONLY|O_CREAT|O_TRUNC, 0644);
+                if (han < 0) return 1;
+                }
+                */
+
+
+            // Send ENTIRE line to server
+            n = write(sock, line, MAX);
+            printf("client: wrote n=%d bytes; line=(%s)\n", n, line);
+
+            // Read a line from sock and show it
+            bzero(ans, MAX);
+            n = read(sock, ans, MAX);
+            printf("client: read  n=%d bytes; echo=(%s)\n",n, ans);
+        }
+    }
+}

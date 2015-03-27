@@ -28,11 +28,19 @@ main(int argc, char *argv[ ])
         myargv[n] = 0;
 */
 
-  #define char *myargv[32];
-  int i = 0;
-  for (; i < argc; i++)
+  char *myargv[32];
+  char input[256];
+  printf("Type Things Please: ");
+  fgets(input, 255, stdin);
+  printf("input: %s\n", input);
+  int i = 1;
+ 
+  char * pch = strtok (input, " ");
+  while (pch != NULL)
   {
-	myargv[i] = argv[i];
+	myargv[i] = pch;
+    pch = strtok (NULL, " ");
+	i++;
   }
   myargv[i] = 0;
   
@@ -43,9 +51,10 @@ main(int argc, char *argv[ ])
   printf("cwd = %s\n", cwd);
 
   // WRITE CODE to let command = CWD/b.out
-  //command = CWD/b.out;
+  // command = CWD/b.out;
+  strcpy(command, strcat(cwd, "/b.out")); 
 
-  execve(command, &myargv);
+  execve(command, &myargv, NULL);
 
   printf("execve failed\n");
 }
@@ -53,10 +62,12 @@ main(int argc, char *argv[ ])
 /*
 
                    QUESTIONS:
-Which process executes a.out?_________________________________________
-which process executes b.out?_________________________________________
+Which process executes a.out? 3386 
+which process executes b.out? 3386
  
-what are the argv[] strings in b.out? ______________________________
+what are the argv[] strings in b.out? 
+	- name of file and myargv (The tokenized string
+	  from user input)
 
      HOW TO PASS env[ ] strings 
                  PATH=/a/b/c

@@ -59,11 +59,12 @@ main(int argc, char *argv[])
   printf("<p>");
 
   //Perform mkdir command
-  if !strcmp(entry[0].name, "mkdir")
-  {	
+  if (!strcmp(entry[0].name, "mkdir"))
+  {
+	printf("WORKING!!!");	
 	//Check if relative to root
-	tempDir = checkRelPath (cwd, entry[1].value)
-	mkdir(tempDir,0755);
+	//tempDir = checkRelPath (cwd, entry[1].value)
+	//mkdir(tempDir,0755);
   }
 
   //Perform rmdir command
