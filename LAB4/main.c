@@ -1,3 +1,6 @@
+//Lorin Vandegrift
+//11354621
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <fcntl.h>
@@ -19,18 +22,26 @@ int fd;
 
 #define BLKSIZE 1024
 
+//Given a file system, a block number, and buffer
+//This function with save the block in the buffer
 void get_block(int fd, int blk, char buf[BLKSIZE])
 {
 	lseek(fd, (long)(blk*BLKSIZE), 0);
 	read(fd, buf, BLKSIZE);
 }
 
+// Given a path and an Inode, it will find the corresonding data blocks
 int search (INODE *inodePtr, char *name)
 {
 	//Search for each part of your pathname
 	char buf[1024];
+	
+	//DP  = Directory pointer
 	DIR  *dp = (DIR *)buf;	  // access buf[] as DIR entries
+	//CP - Charactor pointer, used to keep track if you've
+	//Looked through everything in the buf
 	char *cp = buf;			   // char pointer pointing at buf[ ]
+	//Inumber - Represents Files
 	int ino;
 	int x = 0;
 	char c;
@@ -42,8 +53,13 @@ int search (INODE *inodePtr, char *name)
 	   get_block(fd,inodePtr->i_block[i], buf);
 		//read a block into buf[ ];
 		
+		//If the inode is not empty
+		//If you find a Inode that is 0, you can stop looking
+		//Because the rest of the Inodes will also be null, empty
 		if (dp->inode != 0)
 		{
+			//Go through the inode and compare the given name to the name in the Inode
+			//Until you find a match
 			while(cp < buf + BLKSIZE)
 			{
 			   printf("name: %.*s\n", dp->name_len, dp->name);
@@ -69,9 +85,13 @@ int main (int argc, char *argv[])
 	char buf[1024];
 	SUPER * ext = buf;
 
+	//Opens the disk for Read Only
 	fd = open(argv[1], O_RDONLY);
+
+	//Gets the second block, the super block,
+	//To check if it's a EXT2 filesystem
 	get_block(fd, 1, buf);
-	if (ext->s_magic == 61267)
+	if (ext->s_magic == 61267) 
 	{
 		get_block(fd, 2, buf);
 		GD * gd = buf;
@@ -122,8 +142,15 @@ int main (int argc, char *argv[])
 
 		get_block(fd, block, buf);
 		ip = (INODE *)buf + index;
+	
+		printf("Disk Blocks: \n");
+		for (j = 0; j < 15; j++)
+		{	
+			printf("%d\n", ip->i_block[j]);
+		}
+		
 
-		printf("Direct Blocks: \n");
+		printf("\n\nDirect Blocks: \n");
 		for (j = 0; j < 12; j++)
 		{
 			if(ip->i_block[j] != 0)
@@ -132,12 +159,62 @@ int main (int argc, char *argv[])
 			}
 		}
 
+		printf("\n\nIndirect Blocks: \n");
+		get_block(fd, ip->i_block[12], buf);
+		int * tempPtr = buf;
+		j = 0;
+		while (tempPtr != 0 && tempPtr < buf + BLKSIZE)
+		{
+			if (*tempPtr != 0)
+			{
+				printf(" %d", *tempPtr);
+				if (j % 10 == 0) printf("\n");
+				j++;	
+			}
+			tempPtr++;
+		}
+
+		char buf2[1024];
+		printf("\n\nDouble Indirect Blocks: \n");
+		get_block(fd, ip->i_block[13], buf);
+		get_block(fd, buf[0], buf2);
+
+		for (j = 0; j < 256; j++)
+		{
+			if(buf2[j] != 0)
+			{
+				printf("%d ", buf2[j]);
+				if (j % 10 == 0) printf("\n");
+			}
+		}		
+/*
+		tempPtr = buf;
+		char buf2[1024];
+		int * tempPtr2 = buf2;
+		j = 0;
+		while (tempPtr != 0 && tempPtr < buf + BLKSIZE)
+		{
+			//get_block(fd, *tempPtr, buf2);
+			while (tempPtr2 != 0 && tempPtr2 < buf2 + BLKSIZE)
+			{
+				if (*tempPtr2 != 0)
+				{
+					printf(" %d", *tempPtr2);
+					if (j % 10 == 0) printf("\n");
+					j++;	
+				}
+				tempPtr2++;
+			}
+			tempPtr++;
+		}
+*/
+		
+
 	}
 	else
 	{
 		printf("Your filesystem is not a EXT2 filesysystem.\n");
-	}
-	
+	}	
 }
 
 

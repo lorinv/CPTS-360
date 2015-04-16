@@ -1,0 +1,15 @@
+commmands:
+	open/close file for reading
+	lseek hop aroudn the file
+	read-write: regular files
+	cat
+	cp
+	mv
+	readdir (Like LS?)
+	mount
+	unmount
+
+Exam Crap: File Systems
+	- my show block
+	- open/close/seek?
+
