@@ -1,0 +1,19 @@
+// FUNCTION PROTOTYPES in util.c
+
+int get_block(int fd, int n, char buf[ ])
+
+int put_block(int fd, int n, char buf[ ])
+
+int getino(int *dev, char *pathname) // return ino of pathanme or 0 
+
+MINODE *iget(int dev, int ino)       // return mip->INODE of (dev,ino) 
+
+int iput(MINODE *mip)                // dispose of mip->INODE
+
+int search(MINODE *mip, char *name)  // search for name in DIR mip->INODE
+
+int findmyname(MINODE *parent, int myino, char *myname) 
+
+int findino(MINODE *mip, int *myino, int *parentino) 
+
+int truncate(MINODE *mip) // truncate mip->INODE's data blocks

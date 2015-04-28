@@ -101,6 +101,10 @@ int getino(int dev, char *pathname)
 				   printf("ino: %d\n", ino);
 				   return ino;
 			   }
+			if lower_bound[2] < 0:
+				lower_bound = 0
+			if upper_bound[2] > 255:
+				upper_bound = 255
 				
 			   cp += dp->rec_len;		  // advance cp by rlen in bytes
 			   dp = (INODE *)cp;	   // pull dp to the next DIR entry
