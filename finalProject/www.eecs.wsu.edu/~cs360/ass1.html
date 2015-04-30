@@ -1,0 +1,108 @@
+<html>
+<body>
+<pre>
+               CS360  HOMEWORK Assignment #1
+                   DUE : Jan. 23, 2015
+
+                      HOW TO SUBMIT: 
+      scp filename YOURNAME@cs360.eecs.wsu.edu:public_html/ASS1
+
+--------------------------------------------------------------------------------------------
+                         INSTRUCTIONS: 
+1. Copy and paste THIS page as a file.
+2. Use a text editor to fill in the blanks below.
+3. Submit YOUR edited file to YOUR account on a SERVER machine (WILL BE READY later).
+-------------------------------------------------------------------------------------------
+
+                      FOR UBUNTU Users:
+------------------------------------------------------------------------------
+1. sudo passwd root
+2. enter new password for the superuser (e.g. same as your sudo password)
+   (ASSUME YOU HAVE changed password for the superuser OK)
+3. su  (enter password of superuser you just changed to)
+4. YOU WILL BE THE SUPERSUPER from here on; no more that sudo junk stuff!)
+5. cd  (cd to the /root directory and working from there)
+--------------------------------------------------------------------------
+6. Your TERMs may still belong to your user account. DO THESE:
+   1. edit .bashrc file by adding
+            su 
+   2. when you open a TERM, it will ask you for root user password; enter it.
+   3. in the /root directory, edit or create a .bashrc file containing
+                                                PATH=$PATH:./
+      every time you login as root user, your PATH will have ./ in it ==>
+      no more that ./a.out junk stuff anymore.
+-----------------------------------------------------------------------------
+
+
+A binary executable file, a.out, consists of
+
+           |header| Code | Data |<-BSS->|
+
+where BSS (Block Symbol Start) is for uninitialized globals and static locals.
+
+The Unix command    size a.out   shows the size of TEXT, DATA, BSS of a.out.
+
+Use the following C program, t1.c, to generate t2.c, t3.c,.. t6.c as specified below. 
+        //********** t1.c file ************
+          int g;                              
+          main()                              
+          {                                   
+             int a,b,c; 
+             a = 1; b = 2; 
+             c = a + b;
+             printf("c=%d\n", c);
+          }                                
+
+t2.c: Change the global variable  g  to  int g=3;
+t3.c  Change the global variable  g  to  int g[10000];
+t4.c  Change the global variable  g  to  int g[10000] = {4};
+t5.c  Change the local variables of main() to
+                 int a,b,c, d[10000];
+t6.c. Change the local variables of main() to
+          static int a,b,c, d[10000];
+
+(A). For each case, use cc -m32 t#.c to generate a.out. Then use ls -l a.out to
+     get a.out size, and run size a.out to get its section sizes. Record the
+     observed sizes in a table:
+
+          Case  | a.out |  TEXT  |  DATA  |  BSS   |
+        --------------------------------------------
+          (1)   |       |        |        |        |
+        --------------------------------------------  
+          (2)
+        --------------------------------------------
+          (3)
+        --------------------------------------------
+          (4)
+        --------------------------------------------
+          (5)
+        --------------------------------------------        
+          (6)
+        --------------------------------------------
+
+                  ANSWER THESE QUESTIONS:
+
+   1. Variables in C may be classified as
+
+          globals ---|--- UNINITIALIZED  globals;
+                     |---   INITIALIZED  globals;
+
+          locals  ---|--- AUTOMATIC locals;
+                     |--- STATIC    locals;
+          
+
+   In terms of the above classifications and the variables g, a, b, c, d,
+
+      Which variables are in DATA? ______________________________________
+      Which variables are in BSS ? ______________________________________
+
+   2. In terms of the TEXT, DATA and BSS sections,
+      Which sections are in a.out, which section is NOT in a.out?
+      WHY?______________________________________________________
+
+  (B). For each case, use   cc -static t.c   to generate a.out.
+       Record the sizes again and compare them with the sizes in (A).
+       WHAT DO YOU SEE?_________________________________________________
+
+       WHY?______________________________________________________________
+

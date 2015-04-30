@@ -1,0 +1,44 @@
+///////////////
+	Check Points
+/////////////
+
+JOUNRAL AT SOME POINT TONIGHT
+
+**-1. Need to finish all the function in util.c
+
+**1. Get the basic open_close to compile
+**1.5. Get main setup to test open (Mount FS)
+**2. Fix Segmentation Fault and get INO
+**3. Make a makefile for everything
+**4. Learn about file permissions
+**5. What is oftp
+**6. OpenFileTable (OFT)
+7. Fix tokens
+8. What does 8 mean?
+9. Figure out append mode tag
+**10. What is NFD (10)- Num File Descriptors
+11. Figure out the oftp allocation
+12. Figure out the return value for open_file (something about i)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

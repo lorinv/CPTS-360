@@ -1,11 +1,12 @@
 #include "type.h"
 #include "global.c"
 
-#include "open_close.c"
-#include "read.c"
-#include "write.c"
-#include "cp_mv.c"
-#include "mount_umount.c"
+#include "projectFiles/open_close.c"
+#include "projectFiles/read.c"
+#include "projectFiles/write.c"
+#include "projectFiles/cp_mv.c"
+#include "projectFiles/mount_unmount.c"
+//#include "projectFiles/util.h"
 
 FILE *fp;
 
@@ -239,28 +240,29 @@ int main(int argc, char *argv[ ])
 
       // REPLACE THIS TABLE WITH FUNCTION POINTERs
       switch(cmd){
+
            case 0 : make_dir();               break;
            case 1 : change_dir();             break;
            case 2 : pwd(cwd);                 break;
            case 3 : list_dir();               break;
-           case 4 : mount();                  break;
-           case 5 : umount(pathname);         break;
+//           case 4 : mount();                  break;
+  //         case 5 : umount(pathname);         break;
            case 6 : creat_file();             break;
            case 7 : rmdir();                  break;
            case 8 : rm_file();                break;
            case 9 : open_file();              break;
-           case 10: close_file();             break;
+  //         case 10: close_file();             break;
 
-           case 11: read_file();              break;
-           case 12: write_file();             break;
-           case 13: cat_file();               break;
+ //          case 11: read_file();              break;
+   //        case 12: write_file();             break;
+     //      case 13: cat_file();               break;
 
-           case 14: cp_file();                break;
-           case 15: mv_file();                break;
+       //    case 14: cp_file();                break;
+         //  case 15: mv_file();                break;
 
-           case 16: pfd();                    break;
-           case 17: lseek_file();             break;
-           case 18: rewind_file();            break;      
+      //     case 16: pfd();                    break;
+      //     case 17: lseek_file();             break;
+      //     case 18: rewind_file();            break;      
            case 19: mystat();                 break;
 
            case 20: pm();                     break;
@@ -271,7 +273,7 @@ int main(int argc, char *argv[ ])
            case 23: chmod_file();             break;
            case 24: chown_file();             break;
 
-           case 25: cs();                     break;
+     //      case 25: cs();                     break;
       
            case 29: quit();                   break; 
            case 30: do_touch();               break;
@@ -282,6 +284,7 @@ int main(int argc, char *argv[ ])
            case 34: symlink();                break;
            default: printf("invalid command\n");
                     break;
+
       }
   }
 }

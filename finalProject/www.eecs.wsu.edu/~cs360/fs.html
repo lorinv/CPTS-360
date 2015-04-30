@@ -1,0 +1,364 @@
+<html>
+<Body bgcolor="#dbffff" text="#000000">
+<pre>
+              <h1><center>File System in Operating System</center></h1>                
+1. File I/O Operations
+ 
+    Figure 1 shows a diagram of file I/O operations. In the diagram, the 
+upper part above the double-dashed line represents the kernel space, and the 
+lower part represents the user space of a process. The diagram intends to show 
+the sequence of actions when a process opens a file stream for read/write, and 
+then performs a read or write operation on the file stream. Control flows are 
+identified by the labels (1) to (10) in the diagram, which are explained in 
+detail following the diagram. 
+                                                      
+ ----------------------- File System in Kernel Space -------------------------
+     PROC                       (8)              (9)          
+    ------               ---> Minode[ ]      BUFFER CACHE 
+    |pid |               |  ----------|     --------------
+    |cwd |      (7)      |  |  INODE  |     |  bp=(d,b)  | 
+(6) fd[fd]--> OpenTable  |  | -----   |     -------------- 
+    |    |   ----------  |  |i_size   |         (10)          
+    |    |   |mode=R|W|  |  |i_block[]|     --Device I/O -    
+    |    |   | mptr-------  |         |     | start_io() |  <==> ====Device ====
+    |    |   |offset  |     |(dev,blk)|     | dev_IOQueue|       |   blocks    |
+    ------   ----------     |dirty    |     --------------       ===============
+                            ------------                       
+     
+     -------------------------- kernel functions -------------
+ (5) | kopen(),kclose(),kread(),kwrite(),klseek(),kstat()....|
+     ---------------------------------------------------------
+                                                         |
+ ======================================================= | ====================
+       --------                                          |
+(1).   |uCode |          (2)              ----  (4) System calls-------------
+FILE *fp=fopen( ) ==>  FILE sruct         |    open|read|write|lseek|close  |
+       |udata |   -----------------       -----------------------------------
+       |ubuf[]|   |int fd=open( ) |                      |
+       |      |   |fbuf[BLKSIZE]  | <=> --------- (3) Library I/O -------------
+       |uheap --> |counter,bytePtr|     | fread()|fwrite|ffush|fseek|fclose   |
+       |      |   |other status   |     |getchar()| putchar()|scanf()|printf()|
+       |      |   -----------------     |  fgets()|fputs()|fscanf|fprintf()   |
+       |uStack|                         |getchar()| putchar()|scanf()|printf()| 
+       --------                         ---------------------------------------
+       User Image
+
+------------------------------ User Space -----------------------------------
+
+                 Figure 1. File Operation Diagram
+
+Legends:
+--------------------- User Mode Operations -----------------------------------
+(1). A process in User mode executes
+
+       FILE *fp = fopen("file", "r"); OR "w", etc.
+ 
+(2). fopen() creates a FILE struct in user (heap) space with a fbuf[BLKSIZE]. 
+     fopen() issues  int fd = open("file", O_RDONLY) syscall to Kernel's
+     kopen(), which constructs an Opentable pointing to the file's INODE in 
+     memory. For non-special files, INODE's i_block[ ] points to data blocks on
+     device. On success, fp points at the FILE struct containing fd returned by
+     the open() syscall.
+
+(3). fread(ubuf[ ], size, nitem, fp): READ nitem of size each to ubuf[ ] by
+      .copy data from FILE struct's fbuf[ ] to ubuf[ ], if enough, return;
+      .if fbuf[ ] has no more data, then execute (4a).
+      ---------------------------------------------------------------------
+(4a). issue read(fd, fbuf[ ], BLKSIZE) syscall to Kernel to read a block to 
+      fbuf[ ], then copy data to ubuf[ ] until enough or file has no more data.
+
+(4b). fwrite(ubuf, size, nitem, fp): try copy data to fbuf[ ];
+       .if (fbuf[ ] has room): copy data to fbuf[], return;  
+       .if (fbuf[ ] is full) : issue write(fd, fbuf, BLKSIZE) syscall to write
+                               a block to Kernel, then write to fbuf[ ] again.
+  
+      fflsuh(fp) ==> write fbuf[ ] to Kernel immediately.
+
+      OTHER Library I/O: fputc(),fgetc(),fgets(),fputs(),fscanf(),fprintf(),etc.
+      ALL operate on fbuf[ ] in the FILE struct.
+
+Thus, fread() issues read(), and fwrite() issues write(), syscalls to kernel, 
+but they do so only if necessary and they transfer data in chunks of block size
+for better efficiency.
+
+=================== Kernel Mode Operations ===================================
+(5).File system functions in Kernel.
+    Assume read(fd, fbuf[ ], BLKSIZE) syscall of non-special file. 
+
+(6). In a read() syscall, fd is an opened file descriptor, which is an index
+     in the running PROc's fd[ ] array. The contents of PROC.fd[fd] points to an
+     openTable, which represents the opened file. (7) uses the running PROC's 
+     fd[fd] to access the openTable.
+
+(7). The openTable contains the files's open mode, a pointer to the file's INODE
+     in memory and the current byte offset into the file for read/write. From 
+     the openTable's offset, 
+        .Compute logical block number, lbk;
+        .Map logical block number, lbk, to physical block number, blk, via 
+         INODE's i_block[ ] array at (8).
+
+(8). Minode contains the in-memory INODE of the file. INODE.i_block[ ] contains
+     pointers to physical disk blocks. A file system may use the physical block
+     numbers to read/write data from/to the disk blocks directly, but these 
+     would incur too much physical disk I/O.
+
+(9). In order to improve disk I/O efficiency, most OS kernels use a I/O buffer 
+     cache to reduce the number of physical disk I/O.  
+       
+(9a). For a read(fd, buf, BLKSIZE) syscall, determine the needed (dev, blk) 
+      number, then consult the I/O buffer cache to
+         . get a buffer = (dev, blk);
+         . if (buffer's data are invalid){
+               start_io on buffer;
+               wait for I/O completion;
+           }
+         . copy data from buffer to fbuf[ ];
+         . release the buffer to the buffer cache.
+
+(9b). For a write(fd, fbuf, BLKSIZE) syscall, determine the needed (dev, blk)
+      number, then consult the I/O buffer cache to 
+         . get a buffer = (dev, blk);
+         . write data to the I/O buffer;
+         . mark the buffer as dataValid and DIRTY (for delayed write to disk);
+         . release the buffer to the buffer cache.
+
+(10): Device I/O: Physical disk I/O operations on the I/O buffers ultimately go
+      through the device driver, which consists of start_io() in the upper half
+      and the disk interrupt handler in the lower half of the driver.
+ 
+      ---------------- Upper half of disk driver -----------------
+      start_io(bp):  // bp = a locked buffer, in dev_list, opcode=R|W (ASYNC)
+      {       
+        1. enter bp into dev's I/O_queue;
+        2. if (bp is FIRST in I/O_queue)
+              issue I/O command to device (hardware);
+      }       
+      --------------- Lower half of disk driver -----------------
+      Device_Interrupt_Handler:
+      {  
+         get dev from intrruptStatus; 
+         bp = dequeue(first buffer from dev.I/O_queue);
+         if (bp was READ){
+             mark bp dataVALID;
+             wakeup/unblock waiting process on bp;
+         }
+         else      //  assume bp was for delay write
+             brelse(bp);
+
+         if (dev.I/O_queue NOT empty)
+            issue I/O command for first buffer in dev.I/O_queue;
+      }
+
+
+2. Implementation of EXT2 File System
+
+   Figure 2 shows the internal organization of an EXT2 file system.
+
+ | < ---------------- Kernel -------------------->  | < ------  Device ------>
+                                                    |
+(1).  PROC       (2). root / ------> minode[0]      |         rootDev
+     ------                        ============     |    ====================
+     |pid |                        |  INODE    | <=======|<== INODE#2       |
+     |    |                        | --------  |    |    ====================
+     |cwd -----------------------> |(rootDev,2)|    |  
+     | ...|                        | dirty     |    |
+                                   | refCount  |    |
+     |fd[]|      (3).              | mounted=1 |    |
+     | .------>  openTable[ ]      | mtabPtr   |    |
+     |    |     ---------------    | lock      |    |
+     ------     |mode=R|W|RW|A|    ============     |
+                |refCount     |       (4).          |
+                |minodePtr ------>  minode[ ]       |        BlockDevice
+                |offset       |    =============    |     ==================
+                ---------------    |  INODE    |    |    | INODE -> blocks|
+                                   |-----------|    |     ==================
+                                   |(dev, ino) |    | 
+                                   | dirty     |    |
+                                   | refCount  |    |
+                                   | mounted   |    |
+                                   | mntabPtr  |    |
+                                   | lock      |    |
+                                   =============    |
+                                                    |
+                 (5).    mntTable[ ]                |
+                ------- 0 --------- 1 --------      |
+                | dev          |             |      |
+                | mntPointPtr  |             |      |
+                | fileSysName  |             |      |
+                ------------------------------      |
+                                                    |
+  ---------------------------------------------------------------------------
+                Figure 2. EXT2 FS Data Structures
+
+(1) is the PROC structure of the running process. Each PROC has a cwd, which 
+points to the in-memory INODE of the PROC's Current Working Directory. 
+ 
+(2) is the root pointer of the file system, which points to the in-memory root 
+INODE. When the system starts, one of the devices is chosen as the root device,
+which must be a valid EXT2 file system. The root INODE (inode #2) of the root 
+device is loaded into memory as the root (/) of the file system. This operation
+is known as "mount the root file system". For each mounted file system, an entry
+in the mount table, mntTable[ ] shown at (4), is used to record the mounted file
+system. In the in-memory INODE of the mount point, the mounted flag is turned on
+and the mntabPtr points to the mount table entry. In the corresponding mount 
+table entry, mntPointPtr points back at the in-memory INODE of the mount point.
+As will be shown later, these doubly-linked pointers allow us to cross mount 
+points while traversing the file system tree.
+
+(3) is an openTable entry. When a PROC opens a file, an entry of the PROC's fd[]
+array points to an openTable, which points to the in-memory INODE of the opened
+file.
+
+(4) is an in-memory INODE. Whenever a file or directory is needed, its INODE
+is loaded into a minode[ ] entry for reference. Since INODES are unique, only 
+one copy of each INODE can be in memory at any time. In the minode entry, (dev,
+ino) identify where the INODE came from, for writing back to disk if the INODE 
+is modified. The refCount field records the number of processes that are using 
+the minode. The dirty field indicates whether the INODE has been modified while
+in memory. The mounted flag indicates whether the INODE has been mounted on and,
+if so, the mntabPtr points to the mount table entry of the mounted file system.
+The lock field is to ensure that an in-memory INODE can only be accessed by one
+process at a time, e.g. when modifying the INODE or accessing its data blocks in
+a read/write operation.
+
+(5) is a table of mounted file systems. Each entry contains the file system's
+device name, device number and a pointer to in-memory INODE of the mount point.
+For convenience and efficiency, some other information of the mounted file 
+system, such as the superblock, group descriptor and bitmaps, may also be kept 
+in the mount table entry for quick reference.
+
+
+3. Implementation
+ 
+   The implementation of the file system is divided into three levels. Each
+level deals with a distinct part of the file system that can be implemented and
+tested almost independently. This helps make the development process modular and
+easier to understand.
+
+Level-1 deals with traversing the file system tree. It contains the following
+files, which implement the indicated functions.
+
+   -------------------- Level-1 of FS ----------------------------
+   mkdir_creat.c      : make directory and create file
+   rmdir.c            : remove directory
+   cd_pwd_stat.c      : change directory, get CWD path and file stat info
+   link_unlink.c      : hard link and unlink files
+   symlink_readlink.c : symbolic link files
+   misc1.c            : access, chmod, chown, touch, etc.
+  -----------------------------------------------------------------
+
+   User level programs that make use of level-1 functions include
+        mkdir, creat, rmdir, link, unlink, symlink, rm, ls, cd and pwd,
+which can be used to test the level-1 implementation.
+
+
+Level-2 deals with file contents. It contains the following files, which
+implement the functions for reading/writing file contents.
+   ---------------------- Level-2 of FS -------------------------------
+   open_close_lseek.c  : open file for READ|WRITE|APPEND, close file and lseek
+   read.c              : read from an opened file descriptor
+   write.c             : write to an opened file descriptor 
+   opendir_readdir.c   : read/write directory 
+   dev_switch_table    : read/write special files
+   block device I/O buffer management : I/O buffer management
+
+
+
+Level-3 implements mount and umount operations and file protection.
+   ---------------------- Level-3 of FS ------------------------------
+   mount_umount.c      : mount/umount file systems
+   file protection     : access permission checking
+   file-locking        : lock/unlock files
+   ------------------------------------------------------------------
+
+
+4. Read/write Special Files:
+
+  In the read()/write() algorithms, reading/writing pipes and special files are
+treated differently. Reading/writing pipes are implemented in the pipe mechanism
+in the MTX kernel. Here we only consider reading/writing special files. Each
+special file has a file name in the /dev directory. The file type in a special
+file's inode is marked as special, e.g. 0060000 = block device, 0020000 = char 
+device, etc. Since a special file does not have any disk block, INODE.i_block[0]
+is used to store the device's (major, minor) number, where major=device type and
+minor=unit of that device type. For example, /dev/fd0=(2,0), /dev/tty0=(4,0) and
+/dev/ttyS1=(5,1), etc. The major device number is an index in a device switch 
+table, dev_sw[ ], which contains pointers to device driver functions, as in
+
+         struct dev_sw {
+             int (*dev_read)();
+             int (*dev_write)();
+         } dev_sw[];
+
+Assume that int nocall(){ } is just an empty function, and
+
+         fd_read(), fd_write(),           // floppy disk read/write
+         hd_read(), hd_write(),           // hard disk read/write
+         console_read(), console_write(), // console read/write
+         serial_read(), serial_write(),   // serail port read/write 
+         printer_write();                 // printer write()
+
+are device driver functions. The device switch table is set up to contain the
+driver function pointers, as shown below.
+
+         struct dev_sw dev_sw[ ] =
+         { //   read           write  
+           // --------        --------
+              nocall,          nocall,           // 0 /dev/null
+              nocall,          nocall,           // 1 kernel memory
+              fd_read,         fd_write,         // 2 FD
+              hd_read,         hd_write,         // 3 HD
+              console_read,    console_write,    // 4 console
+              serial_read,     serial_write,     // 5 serial ports
+              nocall,          printer_write     // 6 printer
+         };
+
+Then, reading/writing a special file becomes
+
+      (1). get special file's (major, minor) number from INODE.i_block[0];
+      (2). return (*dev_sw[major].dev_read)(minor, parameters);  // for READ
+      OR   return (*dev_sw[major].dev_write)(minor, parameters); // for WRITE
+      
+(2). invokes the corresponding device driver function, passing as parameters
+the minor device number and other parameters as needed. The device switch table
+is a standard technique used in all Unix-like systems. It makes the I/O
+subsystem structure clear and it greatly reduces the read/write code size.
+Hopefully, this also answers an age-old question from many curious students,
+namely why is the device number of floppy drives 2 and that of hard drives 3, 
+etc. It's because the original Unix designers set up their device switch table 
+this way, and everyone else has been a copycat ever since.  
+
+5. open_dir()/readdir(): 
+
+    Unix/Linux considers everything as a file. Therefore, we should be able to 
+open a DIR for read just like a regular file. So technically there is no need
+for a separate set of opendir() and readdir() functions. Since different Unix
+systems may use different file systems, it may be difficult for a user to 
+interpret the contents of a DIR file. For this reason, the POSIX standard 
+specifies opendir()/readdir() operations, which should be independent of file 
+systems. Support for opendir() is trivial. It's the same open syscall. However,
+readdir() has the form
+          struct dirent *ep = readdir(DIR *dp);
+which returns a pointer to a dirent struct on each call. This calls for a user-
+level implementation similar to a library I/O function. Since MTX does not have
+user-leverl library stream I/O, we shall implement opendir() and readir() as
+syscalls:
+    
+   int opendir(pathaname)
+   {
+       return open(pathname, O_RDONLY|O_DIR);
+   }
+
+where O_DIR is a bit pattern for openning the file as a DIR. In the open file
+table, the mode field contains the O_DIR bit.
+
+   int readdir(int fd, struct udir *dp) // struct udir{ DIR; name[256]};
+   {
+       // same as read() in kernel except:
+       use the current byte offset in OFT to read the next DIR record;
+       copy the DIR record into *udir in Umode;
+   }
+
+User mode programs must use the readdir(fd, struct udir *dir) syscall instead
+of the readdir(DP) call.
+

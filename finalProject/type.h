@@ -1,10 +1,12 @@
 /*	type.h for CS360 Project             */
+#ifndef __TYPE__
+#define __TYPE__
 
 #include <stdio.h>
 #include <stdlib.h>
 
 #include <fcntl.h>
-#include <linux/ext2_fs.h>
+#include <ext2fs/ext2_fs.h>
 #include <libgen.h>
 #include <string.h>
 #include <sys/stat.h>
@@ -119,3 +121,4 @@ extern MINODE *iget();
 extern int iput();
 extern MINODE *mialloc();
 
+#endif

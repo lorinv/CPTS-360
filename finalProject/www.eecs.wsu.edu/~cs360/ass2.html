@@ -1,0 +1,117 @@
+<html>
+<body>
+<pre>
+                  HOMEWORK Assignment #2
+              DUE: Monday Jan 26,2015 (SEE BELOW FOR HOW)
+                    
+Given: A t.c file in C and a ts.s file in assembly code.
+Under Linux, run   cc -m32 t.c ts.s   to generate a.out
+
+In the program, the function calling sequence is
+
+   crt0.o --> main() --> A() --> B() --> C();
+
+The stack contents should be as follows:
+
+HIGH                                                                      LOW  
+-------------------------------------------------------------------------
+    XX|main frame|parmToA|A frame|parmToB|B frame|parmToC|C frame|
+---------------------------------------------------------|-------|-------  
+                                                       CPU.FP   CPU.sp
+
+The assignment is for YOU to verify these.
+
+#---------- ts.s file ----------------------
+        .global get_ebp
+get_ebp:
+         movl %ebp, %eax
+         ret
+
+/************* t.c file ********************/
+#include &lt;stdio.h>
+#include &lt;stdlib.h>
+
+int *ebp;
+
+main(int argc, char *argv[ ], char *env[ ])
+{
+  int a,b,c;
+  printf("enter main\n");
+  
+  printf("&argc=%8x argv=%8x env=%8x\n", &argc, argv, env);
+  printf("&a=%8x    &b=%8x   &c=%8x\n",  &a, &b, &c);
+
+  a=1; b=2; c=3;
+  A(a,b);
+  printf("exit main\n");
+}
+
+int A(int x, int y)
+{
+  int d,e,f;
+  printf("enter A\n");
+  // PRINT ADDRESS OF d, e, f
+
+  d=3; e=4; f=5;
+  B(d,e);
+  printf("exit A\n");
+}
+
+int B(int x, int y)
+{
+  int g,h,i;
+  printf("enter B\n");
+  // PRINT ADDRESS OF g,h,i
+
+  g=6; h=7; i=8;
+  C(g,h);
+  printf("exit B\n");
+}
+
+int C(int x, int y)
+{
+  int u, v, w, *p;
+  printf("enter C\n");
+  // PRINT ADDRESS OF u,v,w;
+  
+  u=9; v=10; w=11;
+
+  /*********** Write C code to DO ************ 
+        (1)-(4) AS SPECIFIED BELOW 
+  *******************************************/
+
+  printf("exit C\n");
+}
+
+=============================================================================
+(1). call get_ebp() in assembly to get ebp register
+          ebp = (int *)get_ebp();
+     ebp is the STACK FRAME pointer of the function C. The stack frames form a
+     link list, which ends with a 0.
+
+     Write C code to print the stack frame link list:
+       ebp -> caller_ebp -> caller'sCaller_ebp -> ....-> 0
+
+(2). Let p point at itself;
+     Print in HEX 100 entries of the stack contents starting from p:
+
+              Address      Contents
+             ---------    ----------
+
+             ---------    ---------- 
+
+(3). Run the program as    a.out > outfile
+     Edit the outfile: Use the addresses of the local variables to IDENTIFY and 
+     EXPLAIN the stack contents in terms of the function stack frames, i.e. 
+     local variables, parameters, return address, etc. 
+
+
+(4). If you run the program as   
+            a.out one two three > outfile
+     IDENTIFY the parameters to main(), i.e. where are   
+            argc, argv[ ], env[ ] 
+     located?
+
+SUBMIT an edited version of your outfile (with your name and ID) to ASS2 of your account:
+
+     scp outfile YOURNAME@cs360.eecs.wsu.edu:public_html/ASS2

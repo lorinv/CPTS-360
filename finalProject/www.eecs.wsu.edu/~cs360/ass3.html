@@ -1,0 +1,78 @@
+<html>
+<body>
+<pre>
+                  HOMEWORK Assignment #3
+                 DUE: Monday, Feb 2,2015 
+                    
+
+1. GIVEN:
+
+#define N 100
+
+typedef struct node{
+  struct node *next;
+  char name[64];
+  int  id;
+  int priority;
+}NODE;
+
+NODE node[N], *freeList, *readyQueue;
+
+2. Write C code for
+   
+int init()
+{
+  (1). each node[i]'s name=nodei; id = i; priority = 0;
+  (2). all N nodes are in the freeList;    
+  (3). readyQueue = 0;
+}
+
+3. Write C functions
+
+int enqueue(NODE **queue, NODE *p) function, 
+    which enters the node pointed by p into queue BY PROIRITY;
+    by FIFO order if same priority;
+
+PROC *dequeue(NODE **queue) function,
+    which removes the node witht the HIGHEST priority and returns its pointer;
+
+int printQueue(NODE *queue) function,
+    which prints the node contents of queue;
+
+int changePriority(NODE **queue, char *name, int priority) function,
+    which changes the priority of a node with name in queue AND reorder the
+    queue if necessary;
+
+4. main()
+{
+  while(1){
+    ask for a command = add |delete |chPriority 
+
+    add: get a free node; 
+         node's priority = rand() % 7; 
+         enter node into readyQueue;
+         print readyQueue BEFORE and AFTER add;
+ 
+   delete: NODE *p = dequene(&readyQueue);
+           enter p into freeList;
+           print readyQueue BEFORE and AFTER delete;
+
+   chPriority NAME: newPriority = rand() % 7;
+                    call YOUR changePriority() to change the priority of
+                    the node with NAME to newPriority;
+                    as usual, print readyQueue both BEFORE and AFTER;
+   }
+}
+
+            
+
+
+
+
+
+
+
+
+
+
+
