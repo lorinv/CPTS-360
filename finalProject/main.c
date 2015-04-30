@@ -2,6 +2,7 @@
 #include "global.c"
 
 #include "projectFiles/open_close.c"
+#include "projectFiles/lseek.c"
 #include "projectFiles/read.c"
 #include "projectFiles/write.c"
 #include "projectFiles/cp_mv.c"
@@ -251,7 +252,7 @@ int main(int argc, char *argv[ ])
            case 7 : rmdir();                  break;
            case 8 : rm_file();                break;
            case 9 : open_file();              break;
-  //         case 10: close_file();             break;
+ //          case 10: close_file();             break;
 
  //          case 11: read_file();              break;
    //        case 12: write_file();             break;
@@ -261,7 +262,7 @@ int main(int argc, char *argv[ ])
          //  case 15: mv_file();                break;
 
       //     case 16: pfd();                    break;
-      //     case 17: lseek_file();             break;
+   //       case 17: lseek_file();             break;
       //     case 18: rewind_file();            break;      
            case 19: mystat();                 break;
 

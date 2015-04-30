@@ -19,6 +19,10 @@ JOUNRAL AT SOME POINT TONIGHT
 **10. What is NFD (10)- Num File Descriptors
 11. Figure out the oftp allocation
 12. Figure out the return value for open_file (something about i)
+13. For close file, where does fd come from
+14. Go back and clean and review open_close
+15. Why did Gabe use dynamic memory
+16. Optimize read code
 
 
 

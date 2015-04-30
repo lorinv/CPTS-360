@@ -20,9 +20,27 @@ int token_path (char *pathname, char **token_ptrs)
 	return tok_i;
 }
 
-void truncate(MINODE* mip)
+int close_file(int fd)
 {
-	int i, j;
+	OFT* oftp;
+	MINODE *mip;
+
+	//Verify fd is within range
+	if (fd > NFD)
+		return -1;
+	//verify running->fd[fd] is pointing at a OFT entry
+	if (running->fd[fd] == 0) return;
+
+	oftp = running->fd[fd];
+	running->fd[fd] = 0;
+	oftp->refCount--;
+	if (oftp->refCount > 0) return 0;
+
+	//last user of this OFT entry ==> displose of the MINODE[]
+	mip = oftp->inodeptr;
+	iput(mip);
+
+	return 0;
 }
 
 int open_file()
@@ -159,7 +177,7 @@ int open_file()
 			oftp->offset = 0; //RW does not truncate file
 			break;
 		case 3:
-			oftop->offset = mip->INODE.i_size; //APPEND mode
+			oftp->offset = mip->INODE.i_size; //APPEND mode
 			break;
 		default:
 			printf("Invalid Mode\n");
@@ -189,14 +207,8 @@ int open_file()
 		mip->INODE.i_mtime = time(0L);
 		mip->dirty = 1;
 	}
+
+	//Return i as the file descriptor
+	//printf("MADE IT!\n");
 }
 
-/*
-//Temp Main
-int main()
-{
-	//Setup in main.c
-	running->cwd->dev = 1; 
-	open_file();
-}
-*/
