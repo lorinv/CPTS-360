@@ -1,0 +1,1049 @@
+./projectFiles/cp_mv.c:	if (fd == -1)
+./projectFiles/cp_mv.c:	int dev = running->cwd->dev;
+./projectFiles/cp_mv.c:	if (mip1->dev == mip2->dev)
+Binary file ./projectFiles/.open_close.c.swp matches
+./projectFiles/open_close.c:		return -1;
+./projectFiles/open_close.c:	//verify running->fd[fd] is pointing at a OFT entry
+./projectFiles/open_close.c:	if (running->fd[fd] == 0) return;
+./projectFiles/open_close.c:	oftp = running->fd[fd];
+./projectFiles/open_close.c:	running->fd[fd] = 0;
+./projectFiles/open_close.c:	oftp->refCount--;
+./projectFiles/open_close.c:	if (oftp->refCount > 0) return 0;
+./projectFiles/open_close.c:	mip = oftp->inodeptr;
+./projectFiles/open_close.c:		dev = root->dev;	
+./projectFiles/open_close.c:		dev = running->cwd->dev;
+./projectFiles/open_close.c:	printf("Permissions in INODE: %d\n", mip->INODE.i_mode); 
+./projectFiles/open_close.c:	if((mip->INODE.i_mode & 0100000) != 0100000)
+./projectFiles/open_close.c:	if ((numMode == 0 && !((mip->INODE).i_mode & 0x0100)) ||
+./projectFiles/open_close.c:		(numMode == 1 && !((mip->INODE).i_mode & 0x0080)) ||
+./projectFiles/open_close.c:		(numMode == 2 && !((mip->INODE).i_mode & 0x0180) == 0x0180) ||
+./projectFiles/open_close.c:		(numMode == 3 && !((mip->INODE).i_mode & 0x0100)))
+./projectFiles/open_close.c:		if(running->fd[i])
+./projectFiles/open_close.c:			oftp = running->fd[i];
+./projectFiles/open_close.c:			if(oftp->refCount && oftp->inodeptr == mip)
+./projectFiles/open_close.c:				if (oftp->mode)
+./projectFiles/open_close.c:					printf("File already opened - incompatible mode.\n");
+./projectFiles/open_close.c:	if (oftp && oftp->mode == numMode)
+./projectFiles/open_close.c:		oftp->refCount++;
+./projectFiles/open_close.c:		oftp->mode = numMode; //open mode?
+./projectFiles/open_close.c:		oftp->refCount = 1;
+./projectFiles/open_close.c:		oftp->inodeptr = mip;
+./projectFiles/open_close.c:			oftp->offset = 0;
+./projectFiles/open_close.c:			oftp->offset = 0;
+./projectFiles/open_close.c:			oftp->offset = 0; //RW does not truncate file
+./projectFiles/open_close.c:			oftp->offset = mip->INODE.i_size; //APPEND mode
+./projectFiles/open_close.c:			return -1;
+./projectFiles/open_close.c:		if (running->fd[i] == 0)
+./projectFiles/open_close.c:			running->fd[i] = oftp;
+./projectFiles/open_close.c:		mip->INODE.i_atime = time(0L);
+./projectFiles/open_close.c:		mip->INODE.i_mtime = time(0L);
+./projectFiles/open_close.c:		mip->dirty = 1;
+./projectFiles/lseek.c:	if (running->fd[fd] && running->fd[fd]->refCount > 0)
+./projectFiles/lseek.c:		oftp = running->fd[fd];
+./projectFiles/lseek.c:		if (position <= (oftp->inodeptr->INODE).i_size)
+./projectFiles/lseek.c:			oftp->offset = position;	
+./projectFiles/lseek.c:			running->fd[fd] = oftp;
+./projectFiles/lseek.c:			return -1;
+./projectFiles/lseek.c:		return -1;
+./projectFiles/funWithC.c:	for (c = 31; c >= 0; c--)
+./projectFiles/funWithC.c:	//101 -> 1010
+./projectFiles/funWithC.c:	//101 -> 010
+./projectFiles/read.c:	if ((!running->fd[fd] && running->fd[fd]->refCount == 0) ||
+./projectFiles/read.c:		(running->fd[fd]->mode != 0 && running->fd[fd]->mode != 2))
+./projectFiles/read.c:		return -1;
+./projectFiles/read.c:	oftp = running->fd[fd];
+./projectFiles/read.c:	mip = oftp->inodeptr;
+./projectFiles/read.c:	int avil = mip->INODE.i_size - oftp->offset;
+./projectFiles/read.c:		lbk = oftp->offset / BLKSIZE;
+./projectFiles/read.c:		startByte = oftp->offset % BLKSIZE;
+./projectFiles/read.c:			blk = mip->INODE.i_block[lbk];
+./projectFiles/read.c:			get_block(mip->dev, mip->INODE.i_block[lbk], buf);
+./projectFiles/read.c:			blk = buf[lbk - 12]; 
+./projectFiles/read.c:			get_block(mip->dev, mip->INODE.i_block[13], buf);
+./projectFiles/read.c:			get_block(mip->dev, buf[((lbk - 12) / 256) - 1], buf2);
+./projectFiles/read.c:			blk = buf2[(lbk - 12) - (256 * ((lbk - 12) / 256))];
+./projectFiles/read.c:		get_block(mip->dev, blk, readbuf);
+./projectFiles/read.c:		remain = BLKSIZE - startByte;
+./projectFiles/read.c:			oftp->offset++;
+./projectFiles/read.c:			avil--; nbytes--; remain--;
+./projectFiles/write.c:	if ((running->fd[fd] && running->fd[fd]->refCount) &&
+./projectFiles/write.c:		(running->fd[fd]->mode == 1 || running->fd[fd]->mode == 2 ||
+./projectFiles/write.c:			running->fd[fd]->mode == 3))
+./projectFiles/write.c:		return -1;
+./projectFiles/write.c:	oftp = running->fd[fd];
+./projectFiles/write.c:		lbk = 	oftp->offset / BLKSIZE;
+./projectFiles/write.c:		startByte = oftp->offset & BLKSIZE;
+./projectFiles/write.c:			if (ip->INODE.i_block[lbk] == 0)
+./projectFiles/write.c:				mip->INODE.i_block[lbk] = balloc(mip->dev);
+./projectFiles/write.c:			blk = mip->INODE.i_block[lbk];
+./projectFiles/write.c:		get_block(mip->dev, blk, wbuf);		
+./projectFiles/write.c:		remain = BLKSIZE - startByte;
+./projectFiles/write.c:			nbytes--; remain--;
+./projectFiles/write.c:			oftp->offset++;
+./projectFiles/write.c:			if (offset > mip->INODE.i_size)
+./projectFiles/write.c:				mip->INODE.i_size++;
+./projectFiles/write.c:		put_block(mip->dev, blk, wbuf);
+./projectFiles/write.c:	mip->dirty = 1; //mark mip dirty for iput()
+./projectFiles/TODO.c:	//Inumber - Represents Files
+./projectFiles/TODO.c:	   get_block(fd,inodePtr->i_block[i], buf);
+./projectFiles/TODO.c:		if (dp->inode != 0)
+./projectFiles/TODO.c:			   printf("name: %.*s\n", dp->name_len, dp->name);
+./projectFiles/TODO.c:			   if (strncmp(name, dp->name, strlen(name)) == 0 && dp->name_len == strlen(name))
+./projectFiles/TODO.c:				   ino = dp->inode;
+./projectFiles/TODO.c:			   cp += dp->rec_len;		  // advance cp by rlen in bytes
+./projectFiles/TODO.c:	line[strlen(line)-1] = 0;
+./projectFiles/TODO.c:         if (pathname[0]=='/') dev = root->dev;          // root INODE's dev
+./projectFiles/TODO.c:         else                  dev = running->cwd->dev;  
+./projectFiles/TODO.c:  4. check mip->INODE.i_mode to verify it's a REGULAR file and permission OK.
+./projectFiles/TODO.c:         oftp->mode = mode;      // mode = 0|1|2|3 for RD|WR|RW|APPEND 
+./projectFiles/TODO.c:         oftp->refCount = 1;
+./projectFiles/TODO.c:         oftp->minodePtr = mip;  // point at the file's minode[]
+./projectFiles/TODO.c:         case 0 : oftp->offset = 0; 
+./projectFiles/TODO.c:                  oftp->offset = 0;
+./projectFiles/TODO.c:         case 2 : oftp->offset = 0;     // RW does NOT truncate file
+./projectFiles/TODO.c:         case 3 : oftp->offset =  mip->INODE.i_size;  // APPEND mode
+./projectFiles/TODO.c:                  return(-1);
+./projectFiles/TODO.c:      Let running->fd[i] point at the OFT entry
+./projectFiles/TODO.c:  2. verify running->fd[fd] is pointing at a OFT entry
+./projectFiles/TODO.c:     oftp = running->fd[fd];
+./projectFiles/TODO.c:     running->fd[fd] = 0;
+./projectFiles/TODO.c:     oftp->refCount--;
+./projectFiles/TODO.c:     if (oftp->refCount > 0) return 0;
+./projectFiles/TODO.c:     mip = oftp->inodeptr;
+./projectFiles/util.c:	//Return -1 = error
+./projectFiles/util.c:		ino = running->cwd->ino;
+./projectFiles/util.c:		*dev = running->cwd->dev;
+./projectFiles/util.c:	if (tokenCount == 0) return -1;
+./projectFiles/util.c:		get_block(inodePtr->dev, inodePtr->INODE.i_block[i], buf);
+./projectFiles/util.c:			if (strncmp(name, dp->name, strlen(name)) == 0 && dp->name_len == strlen(name))
+./projectFiles/util.c:				ino = dp->inode;
+./projectFiles/util.c:			cp += dp->rec_len;	//move cp to start of the next Inode
+./projectFiles/util.c:	blk = (ino - 1)/8 + INODEBLOCK; 
+./projectFiles/util.c:	offset = (ino - 1) % 8;
+./projectFiles/util.c:	mip->refCount--;
+./projectFiles/util.c:	if (0 < mip->refCount) return; 
+./projectFiles/util.c:	if (!mip->dirty) return;	
+./projectFiles/util.c:	if (0 == mip->refCount && mip->dirty)
+./projectFiles/util.c:		//use -1 because inodes index from 1
+./projectFiles/util.c:		blk = (mip->ino - 1)/8 + INODEBLOCK;
+./projectFiles/util.c:		offset = (mip->ino - 1) % 8;
+./projectFiles/util.c:		get_block(mip->dev, blk, buf);
+./projectFiles/util.c:		memcpy(ip2, &mip->INODE, sizeof(INODE));
+./projectFiles/util.c:		put_block(mip->dev, blk, buf);
+./projectFiles/mount_unmount.c:		//NMOUNT - # of systems mounted
+./projectFiles/mount_unmount.c:		if (ext->s_magic != 0xEF53)
+./projectFiles/mount_unmount.c:		if (!S_ISDIR(mip->INODE.i_mode))
+./projectFiles/mount_unmount.c:		if (running->cwd->dev == mip->dev)
+./projectFiles/mount_unmount.c:		mntptr->dev = dev;
+./projectFiles/mount_unmount.c:		strcpy(mntptr->name, pathname);
+./projectFiles/mount_unmount.c:		strcpy(mntptr->mount_name, parameter);
+./projectFiles/mount_unmount.c:		mntptr->ninodes = ext->s_inodes_count;
+./projectFiles/mount_unmount.c:		mntptr->nblocks = ext->s_blocks_count;
+./projectFiles/mount_unmount.c:		mntptr->mounted_inode = iget(dev, ROOT_INODE);
+./projectFiles/mount_unmount.c:			//Else return crap - if not found
+./projectFiles/mount_unmount.c:	//compare the cwd->dev to the MINODE->devs
+./projectFiles/mount_unmount.c:	//compare running->cwd to INODE mounttable
+./projectFiles/cat.c:	if (fd == -1)
+./projectFiles/cat.c:		return -1;
+./checkPoints.txt:**-1. Need to finish all the function in util.c
+./checkPoints.txt:**10. What is NFD (10)- Num File Descriptors
+./global.c:  return(-1);
+./global.c:      if (ip->refCount > 0){
+./global.c:         printf("[%d %d]    %d\n", ip->dev, ip->ino, ip->refCount);
+Binary file ./a.out matches
+./getino.post.c:    dev = root->dev;            // start from / 
+./getino.post.c:    dev = running->cwd->dev;    // start from running's CWD
+./TODOBackup.c:	//CP - Charactor pointer, used to keep track if you've
+./TODOBackup.c:	//Inumber - Represents Files
+./TODOBackup.c:	   get_block(fd,inodePtr->i_block[i], buf);
+./TODOBackup.c:		if (dp->inode != 0)
+./TODOBackup.c:			   printf("name: %.*s\n", dp->name_len, dp->name);
+./TODOBackup.c:			   if (strncmp(name, dp->name, strlen(name)) == 0 && dp->name_len == strlen(name))
+./TODOBackup.c:				   ino = dp->inode;
+./TODOBackup.c:			   cp += dp->rec_len;		  // advance cp by rlen in bytes
+./TODOBackup.c:	line[strlen(line)-1] = 0;
+./TODOBackup.c:         if (pathname[0]=='/') dev = root->dev;          // root INODE's dev
+./TODOBackup.c:         else                  dev = running->cwd->dev;  
+./TODOBackup.c:  4. check mip->INODE.i_mode to verify it's a REGULAR file and permission OK.
+./TODOBackup.c:         oftp->mode = mode;      // mode = 0|1|2|3 for RD|WR|RW|APPEND 
+./TODOBackup.c:         oftp->refCount = 1;
+./TODOBackup.c:         oftp->minodePtr = mip;  // point at the file's minode[]
+./TODOBackup.c:         case 0 : oftp->offset = 0; 
+./TODOBackup.c:                  oftp->offset = 0;
+./TODOBackup.c:         case 2 : oftp->offset = 0;     // RW does NOT truncate file
+./TODOBackup.c:         case 3 : oftp->offset =  mip->INODE.i_size;  // APPEND mode
+./TODOBackup.c:                  return(-1);
+./TODOBackup.c:      Let running->fd[i] point at the OFT entry
+./TODOBackup.c:  2. verify running->fd[fd] is pointing at a OFT entry
+./TODOBackup.c:     oftp = running->fd[fd];
+./TODOBackup.c:     running->fd[fd] = 0;
+./TODOBackup.c:     oftp->refCount--;
+./TODOBackup.c:     if (oftp->refCount > 0) return 0;
+./TODOBackup.c:     mip = oftp->inodeptr;
+Binary file ./proj.bin matches
+./type.h:// In-memory inodes structure
+Binary file ./mydisk matches
+Binary file ./mylib matches
+./www.eecs.wsu.edu/~cs360/notes3.html:  ------------------------------------------------------------------
+./www.eecs.wsu.edu/~cs360/notes3.html:   -----------------------------------------------------------------
+./www.eecs.wsu.edu/~cs360/notes3.html:     -------------------------------------------------------
+./www.eecs.wsu.edu/~cs360/notes3.html:      Function call conventions in 32-bit C and stack usage.
+./www.eecs.wsu.edu/~cs360/notes3.html:     -------------------------------------------------------
+./www.eecs.wsu.edu/~cs360/notes3.html:      If you are running Linux on 64-bit machines, use
+./www.eecs.wsu.edu/~cs360/notes3.html:                 gcc -m32 file.c 
+./www.eecs.wsu.edu/~cs360/notes3.html:      to generate 32-bit code. 
+./www.eecs.wsu.edu/~cs360/notes3.html:In 64-bit mode, which has more CPU registers, the GCC compiler generated code 
+./www.eecs.wsu.edu/~cs360/notes3.html:The following discussions apply only to 32-bit or lower code. 
+./www.eecs.wsu.edu/~cs360/notes3.html:during execution. It does NOT matter whether it's 64-bit or 32-bit environment.
+./www.eecs.wsu.edu/~cs360/notes3.html:          -----------------------------
+./www.eecs.wsu.edu/~cs360/notes3.html:          ----------------------------- 
+./www.eecs.wsu.edu/~cs360/notes3.html:     HighAddress      ---------->              LowAddress
+./www.eecs.wsu.edu/~cs360/notes3.html:       --------------------------------------------- 
+./www.eecs.wsu.edu/~cs360/notes3.html:       --------------------------------------------- 
+./www.eecs.wsu.edu/~cs360/notes3.html:     HighAddress      ---------->              LowAddress
+./www.eecs.wsu.edu/~cs360/notes3.html:       --------------------------------------------- 
+./www.eecs.wsu.edu/~cs360/notes3.html:       --------------------------------------------- 
+./www.eecs.wsu.edu/~cs360/notes3.html:     at -4, -8, -12 bytes from where FP is pointing at, respectively. 
+./www.eecs.wsu.edu/~cs360/notes3.html:     These are expressed as -4(FP), -8(FP), -12(FP) in assembly code.
+./www.eecs.wsu.edu/~cs360/notes3.html:     HighAddress        ---------->            LowAddress
+./www.eecs.wsu.edu/~cs360/notes3.html:       --------------------------------------------- 
+./www.eecs.wsu.edu/~cs360/notes3.html:       --------------------------------------------- 
+./www.eecs.wsu.edu/~cs360/notes3.html:     HighAddress           ---------->              LowAddress
+./www.eecs.wsu.edu/~cs360/notes3.html:       -------------------------------------------------------- 
+./www.eecs.wsu.edu/~cs360/notes3.html:       -------------------------------------------------------- 
+./www.eecs.wsu.edu/~cs360/notes3.html:                                |<------  FP ---->|    SP
+./www.eecs.wsu.edu/~cs360/notes3.html:               -----------------------------
+./www.eecs.wsu.edu/~cs360/notes3.html:               -----------------------------
+./www.eecs.wsu.edu/~cs360/notes3.html:     -4(FP) and -8(FP).
+./www.eecs.wsu.edu/~cs360/notes3.html:               |<-------- Stack Frame of Function ---------->|
+./www.eecs.wsu.edu/~cs360/notes3.html:         -----------------------------------------------------
+./www.eecs.wsu.edu/~cs360/notes3.html:         --------------|----------------|---------------------  
+./www.eecs.wsu.edu/~cs360/notes3.html:             -offset(FP)
+./www.eecs.wsu.edu/~cs360/notes3.html:     HighAddress            ------------->              LowAddress
+./www.eecs.wsu.edu/~cs360/notes3.html:       -------------------------------------------------------- 
+./www.eecs.wsu.edu/~cs360/notes3.html:       -------------------------------------------------------- 
+./www.eecs.wsu.edu/~cs360/notes3.html:                                |<------  FP ---->|    SP
+./www.eecs.wsu.edu/~cs360/LABsh.html:                DUE & DEMO: Monday 2-16-2015
+./www.eecs.wsu.edu/~cs360/LABsh.html:------------- PART 1: Single Command with I/O Redirection ---------------
+./www.eecs.wsu.edu/~cs360/LABsh.html:   4-1. Handle I/O redirection:
+./www.eecs.wsu.edu/~cs360/LABsh.html:   4-2. Execute cmd by execve(), passing parameters 
+./www.eecs.wsu.edu/~cs360/LABsh.html:        where myargv[0]->cmd, myargv[1]->arg1, ....., ending with NULL pointer
+./www.eecs.wsu.edu/~cs360/LABsh.html:   4-2. NOTE: your argv[] must be passed correctly, as in
+./www.eecs.wsu.edu/~cs360/LABsh.html:------------------ PART 2: Commands with Pipes ---------------------------
+./www.eecs.wsu.edu/~cs360/ass2.html:Under Linux, run   cc -m32 t.c ts.s   to generate a.out
+./www.eecs.wsu.edu/~cs360/ass2.html:   crt0.o --> main() --> A() --> B() --> C();
+./www.eecs.wsu.edu/~cs360/ass2.html:-------------------------------------------------------------------------
+./www.eecs.wsu.edu/~cs360/ass2.html:---------------------------------------------------------|-------|-------  
+./www.eecs.wsu.edu/~cs360/ass2.html:#---------- ts.s file ----------------------
+./www.eecs.wsu.edu/~cs360/ass2.html:        (1)-(4) AS SPECIFIED BELOW 
+./www.eecs.wsu.edu/~cs360/ass2.html:       ebp -> caller_ebp -> caller'sCaller_ebp -> ....-> 0
+./www.eecs.wsu.edu/~cs360/ass2.html:             ---------    ----------
+./www.eecs.wsu.edu/~cs360/ass2.html:             ---------    ---------- 
+./www.eecs.wsu.edu/~cs360/util.html:// In-memory inodes structure
+./www.eecs.wsu.edu/~cs360/util.html:  --------------------------------------------------------------
+./www.eecs.wsu.edu/~cs360/open_close.html:  ===========    |---> ===========    |--> ============    || ===============
+./www.eecs.wsu.edu/~cs360/open_close.html:  |pid, ppid|    |     |refCount |    |    | -------  |    || =============== 
+./www.eecs.wsu.edu/~cs360/open_close.html:  |uid      |    |     |minodePtr|---->    | dev,ino  |    || 
+./www.eecs.wsu.edu/~cs360/open_close.html:  | ------  |    |         |               ============
+./www.eecs.wsu.edu/~cs360/open_close.html:0 |   ----->|--->|         |
+./www.eecs.wsu.edu/~cs360/open_close.html:  | ------  |              |   
+./www.eecs.wsu.edu/~cs360/open_close.html:  | ------  |             --------------------------------
+./www.eecs.wsu.edu/~cs360/open_close.html:  | ------  |             --------------------------------    
+./www.eecs.wsu.edu/~cs360/open_close.html:         if (pathname[0]=='/') dev = root->dev;          // root INODE's dev
+./www.eecs.wsu.edu/~cs360/open_close.html:         else                  dev = running->cwd->dev;  
+./www.eecs.wsu.edu/~cs360/open_close.html:  4. check mip->INODE.i_mode to verify it's a REGULAR file and permission OK.
+./www.eecs.wsu.edu/~cs360/open_close.html:         oftp->mode = mode;      // mode = 0|1|2|3 for RD|WR|RW|APPEND 
+./www.eecs.wsu.edu/~cs360/open_close.html:         oftp->refCount = 1;
+./www.eecs.wsu.edu/~cs360/open_close.html:         oftp->minodePtr = mip;  // point at the file's minode[]
+./www.eecs.wsu.edu/~cs360/open_close.html:         case 0 : oftp->offset = 0; 
+./www.eecs.wsu.edu/~cs360/open_close.html:                  oftp->offset = 0;
+./www.eecs.wsu.edu/~cs360/open_close.html:         case 2 : oftp->offset = 0;     // RW does NOT truncate file
+./www.eecs.wsu.edu/~cs360/open_close.html:         case 3 : oftp->offset =  mip->INODE.i_size;  // APPEND mode
+./www.eecs.wsu.edu/~cs360/open_close.html:                  return(-1);
+./www.eecs.wsu.edu/~cs360/open_close.html:      Let running->fd[i] point at the OFT entry
+./www.eecs.wsu.edu/~cs360/open_close.html:  1. release mip->INODE's data blocks;
+./www.eecs.wsu.edu/~cs360/open_close.html:  2. verify running->fd[fd] is pointing at a OFT entry
+./www.eecs.wsu.edu/~cs360/open_close.html:     oftp = running->fd[fd];
+./www.eecs.wsu.edu/~cs360/open_close.html:     running->fd[fd] = 0;
+./www.eecs.wsu.edu/~cs360/open_close.html:     oftp->refCount--;
+./www.eecs.wsu.edu/~cs360/open_close.html:     if (oftp->refCount > 0) return 0;
+./www.eecs.wsu.edu/~cs360/open_close.html:     mip = oftp->inodeptr;
+./www.eecs.wsu.edu/~cs360/open_close.html:       ----    ----    ------   --------
+./www.eecs.wsu.edu/~cs360/open_close.html:      --------------------------------------
+./www.eecs.wsu.edu/~cs360/notes2.html:     int h;                             /* un-initialized global variable */
+./www.eecs.wsu.edu/~cs360/notes2.html:                           |-- non-static --|
+./www.eecs.wsu.edu/~cs360/notes2.html:                |- global -|                |- initialized or uninitialized
+./www.eecs.wsu.edu/~cs360/notes2.html:                |          |-- static ------|
+./www.eecs.wsu.edu/~cs360/notes2.html:     Variables -|                          
+./www.eecs.wsu.edu/~cs360/notes2.html:                |- local --|-- register-----|- in CPU register (if possible)
+./www.eecs.wsu.edu/~cs360/notes2.html:                           |-- automatic ---|- allocated on stack
+./www.eecs.wsu.edu/~cs360/notes2.html:                           |-- static ------|- initialized or uninitialized
+./www.eecs.wsu.edu/~cs360/notes2.html:they are defined. Non-static globals are visible to all the files of the same 
+./www.eecs.wsu.edu/~cs360/notes2.html:addition, C also supports volatile variables, which are used as memory-mapped 
+./www.eecs.wsu.edu/~cs360/notes2.html:   a.out. This makes a.out self-sufficient but usually very large.
+./www.eecs.wsu.edu/~cs360/notes2.html:      . Modifying library functions does not have to re-linking any a.out file.
+./www.eecs.wsu.edu/~cs360/notes2.html:   ---------------------------------------------------------------------------
+./www.eecs.wsu.edu/~cs360/notes2.html:     bss (Block Started by Symbol) Section: un-initialized statics and globals
+./www.eecs.wsu.edu/~cs360/notes2.html:   ---------------------------------------------------------------------------
+./www.eecs.wsu.edu/~cs360/notes2.html:   executes a.out with the strings ONE TWO THREE as command-line parameters.
+./www.eecs.wsu.edu/~cs360/notes2.html:                      |<-- a.out -->|bss  |
+./www.eecs.wsu.edu/~cs360/notes2.html:                      ---------------------
+./www.eecs.wsu.edu/~cs360/notes2.html:                      ---------------
+./www.eecs.wsu.edu/~cs360/notes2.html:          LowAddress  --------------|---------------------   HighAddress 
+./www.eecs.wsu.edu/~cs360/notes2.html:                      --------------------|---------------
+./www.eecs.wsu.edu/~cs360/notes2.html:        new() in C++) and STACK is the run-time stack.
+./www.eecs.wsu.edu/~cs360/notes2.html:        1. The process calls exit(bye_value), which does some clean-up work 
+./www.eecs.wsu.edu/~cs360/notes2.html:           Naturally, only one of the bytes would be non-zero, WHY?
+./www.eecs.wsu.edu/~cs360/index.html:<A HREF="ass2.html">HOMEWORK Assignment #2 DUE:1-26-2015</a>
+./www.eecs.wsu.edu/~cs360/index.html:<A HREF="LAB1.sp15.html">LAB Assignment #1 DUE: 1-30-2015</a>
+./www.eecs.wsu.edu/~cs360/index.html:<A HREF="ass3.html">HOMEWORK Assignment #3: 2-2-15</a>
+./www.eecs.wsu.edu/~cs360/index.html:<A HREF="LABsh.html">LAB Assignment #2 DUE:Monday 2-16-2015</a>
+./www.eecs.wsu.edu/~cs360/index.html:<A HREF="ASS5.html">HOMEWORK #5 DUE: 2-25-2015</a>
+./www.eecs.wsu.edu/~cs360/index.html:EXAM #1 Date:March 6, Friday, 2015 (BOTH SECTIONS) 4-5PM Sloan 9
+./www.eecs.wsu.edu/~cs360/index.html:<A HREF="showblock.html">LAB Assignment #4: DUE:3-25-2015</a>
+./www.eecs.wsu.edu/~cs360/index.html:LAB #6 (mkdir_creat_rmdir_link_unlink) DUE DATE: 4-8,9-2015
+./www.eecs.wsu.edu/~cs360/index.html:<A HREF="misc.1.html">Other Level-1 Syscalls</a>
+./www.eecs.wsu.edu/~cs360/rmdir.html:  ------------------------------------------------------------------------
+./www.eecs.wsu.edu/~cs360/rmdir.html:     if (NOT DIR || BUSY || not empty): iput(mip); retunr -1;
+./www.eecs.wsu.edu/~cs360/rmdir.html:         if (mip->INODE.i_block[i]==0)
+./www.eecs.wsu.edu/~cs360/rmdir.html:         bdealloc(mip->dev, mip->INODE.i_block[i]);
+./www.eecs.wsu.edu/~cs360/rmdir.html:     idealloc(mip->dev, mip->ino);
+./www.eecs.wsu.edu/~cs360/rmdir.html:     iput(mip); (which clears mip->refCount = 0);
+./www.eecs.wsu.edu/~cs360/rmdir.html:         pip = iget(mip->dev, parent's ino); 
+./www.eecs.wsu.edu/~cs360/rmdir.html:                 pip->parent Minode, name = entry to remove
+./www.eecs.wsu.edu/~cs360/rmdir.html:          -----------------------------------------------
+./www.eecs.wsu.edu/~cs360/rmdir.html:          -----------------------------------------------
+./www.eecs.wsu.edu/~cs360/rmdir.html:          -----------------------------------------------
+./www.eecs.wsu.edu/~cs360/rmdir.html:          -----------------------------------------------
+./www.eecs.wsu.edu/~cs360/rmdir.html:          -----------------------------------------------
+./www.eecs.wsu.edu/~cs360/rmdir.html:          -----------------------------------------------
+./www.eecs.wsu.edu/~cs360/rmdir.html:     mark parent minode DIRTY for write-back
+./www.eecs.wsu.edu/~cs360/account.html:        public_html --- index.html
+./www.eecs.wsu.edu/~cs360/account.html:                     |- ASS1 : for submitting assignment #1
+./www.eecs.wsu.edu/~cs360/account.html:                     |- ASS2 : for submitting assignment #2
+./www.eecs.wsu.edu/~cs360/account.html:        ------------------------------------
+./www.eecs.wsu.edu/~cs360/account.html:        |       ------------------         |
+./www.eecs.wsu.edu/~cs360/account.html:        |       ------------------         |
+./www.eecs.wsu.edu/~cs360/account.html:        ------------------------------------
+Binary file ./www.eecs.wsu.edu/~cs360/TA/exam1.jpg matches
+Binary file ./www.eecs.wsu.edu/~cs360/TA/exam2.jpg matches
+./www.eecs.wsu.edu/~cs360/TA/TASP15.html:    Office Hours:   Mon, Tue 7:00-8:00 pm
+./www.eecs.wsu.edu/~cs360/TA/TASP15.html:    Demo Hours:     Wed, Thu 6:00-9:00 pm
+./www.eecs.wsu.edu/~cs360/TA/TASP15.html:    Phone: 	    (509)-339-3902
+./www.eecs.wsu.edu/~cs360/TA/TASP15.html:   <span style="line-height: 2.5; ">
+./www.eecs.wsu.edu/~cs360/TA/TASP15.html: Wednesday, April 29 : 3:00-7:00pm, for Group 1 <br>
+./www.eecs.wsu.edu/~cs360/TA/TASP15.html: Thursday, April 30 :  3:00-7:00pm, for Group 2 <br>
+./www.eecs.wsu.edu/~cs360/TA/TASP15.html:   <span style="line-height: 2.5; ">
+./www.eecs.wsu.edu/~cs360/TA/TASP15.html:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Mean: 66.12 +/- 24.17423 <br>
+./www.eecs.wsu.edu/~cs360/TA/TASP15.html:   <span style="line-height: 2.5; ">
+./www.eecs.wsu.edu/~cs360/TA/TASP15.html:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Mean: 58.12963 +/- 19.59789 <br>
+./www.eecs.wsu.edu/~cs360/TA/TASP15.html:   <span style="line-height: 2.5; ">
+./www.eecs.wsu.edu/~cs360/TA/score.html:<h2>Group 1 Wed 6-9 pm<h2>
+./www.eecs.wsu.edu/~cs360/TA/score.html:<table class="Group1" border="5" style="line-height: 1.5;  font-size: 80%"  >
+./www.eecs.wsu.edu/~cs360/TA/score.html:<h2>Group 2 T 6-9 pm<h2>
+./www.eecs.wsu.edu/~cs360/TA/score.html:<table class="Group2" border="5" style="line-height: 1.5;  font-size: 80%"  >
+./www.eecs.wsu.edu/~cs360/gdb.html:X-window.
+./www.eecs.wsu.edu/~cs360/gdb.html:1. Under X-window, use emacs to edit a C file, e.g. t.c
+./www.eecs.wsu.edu/~cs360/gdb.html:                 cc -g t.c
+./www.eecs.wsu.edu/~cs360/gdb.html:   the -g flag tells cc to generate a.out for debugging (it builds a symbol 
+./www.eecs.wsu.edu/~cs360/gdb.html:   Without -g, a.out cannot be debugged by gdb.
+./www.eecs.wsu.edu/~cs360/gdb.html:     ---------------------------------------------------
+./www.eecs.wsu.edu/~cs360/gdb.html:     ---------------------------------------------------
+./www.eecs.wsu.edu/~cs360/gdb.html:   Assume:  cc -g t.c ==> a.out
+./www.eecs.wsu.edu/~cs360/gdb.html:            gdb a.out ==> ----------------------------- 
+./www.eecs.wsu.edu/~cs360/gdb.html:                          -----------------------------
+./www.eecs.wsu.edu/~cs360/gdb.html:                          -----------------------------
+./www.eecs.wsu.edu/~cs360/gdb.html:                              |         ---------------------- 
+./www.eecs.wsu.edu/~cs360/gdb.html:                              |         -----------------------
+./www.eecs.wsu.edu/~cs360/gdb.html:      |         exit(0) --> _exit(0)                         
+./www.eecs.wsu.edu/~cs360/gdb.html:        exit(value)-----> _exit(value)
+./www.eecs.wsu.edu/~cs360/gdb.html:(3).   _exit(value) ----> to Kernel to DIE immediately.
+./www.eecs.wsu.edu/~cs360/gdb.html:----------------------------------------------------------
+./www.eecs.wsu.edu/~cs360/gdb.html:       kill -s (1 to 31) pid ==> send signal# to target process by pid
+./www.eecs.wsu.edu/~cs360/gdb.html:---------------------------------------------------------------------------
+./www.eecs.wsu.edu/~cs360/fs.html:upper part above the double-dashed line represents the kernel space, and the 
+./www.eecs.wsu.edu/~cs360/fs.html: ----------------------- File System in Kernel Space -------------------------
+./www.eecs.wsu.edu/~cs360/fs.html:    ------               ---> Minode[ ]      BUFFER CACHE 
+./www.eecs.wsu.edu/~cs360/fs.html:    |pid |               |  ----------|     --------------
+./www.eecs.wsu.edu/~cs360/fs.html:(6) fd[fd]--> OpenTable  |  | -----   |     -------------- 
+./www.eecs.wsu.edu/~cs360/fs.html:    |    |   ----------  |  |i_size   |         (10)          
+./www.eecs.wsu.edu/~cs360/fs.html:    |    |   |mode=R|W|  |  |i_block[]|     --Device I/O -    
+./www.eecs.wsu.edu/~cs360/fs.html:    |    |   | mptr-------  |         |     | start_io() |  <==> ====Device ====
+./www.eecs.wsu.edu/~cs360/fs.html:    ------   ----------     |dirty    |     --------------       ===============
+./www.eecs.wsu.edu/~cs360/fs.html:                            ------------                       
+./www.eecs.wsu.edu/~cs360/fs.html:     -------------------------- kernel functions -------------
+./www.eecs.wsu.edu/~cs360/fs.html:     ---------------------------------------------------------
+./www.eecs.wsu.edu/~cs360/fs.html:       --------                                          |
+./www.eecs.wsu.edu/~cs360/fs.html:(1).   |uCode |          (2)              ----  (4) System calls-------------
+./www.eecs.wsu.edu/~cs360/fs.html:       |udata |   -----------------       -----------------------------------
+./www.eecs.wsu.edu/~cs360/fs.html:       |      |   |fbuf[BLKSIZE]  | <=> --------- (3) Library I/O -------------
+./www.eecs.wsu.edu/~cs360/fs.html:       |uheap --> |counter,bytePtr|     | fread()|fwrite|ffush|fseek|fclose   |
+./www.eecs.wsu.edu/~cs360/fs.html:       |      |   -----------------     |  fgets()|fputs()|fscanf|fprintf()   |
+./www.eecs.wsu.edu/~cs360/fs.html:       --------                         ---------------------------------------
+./www.eecs.wsu.edu/~cs360/fs.html:------------------------------ User Space -----------------------------------
+./www.eecs.wsu.edu/~cs360/fs.html:--------------------- User Mode Operations -----------------------------------
+./www.eecs.wsu.edu/~cs360/fs.html:     memory. For non-special files, INODE's i_block[ ] points to data blocks on
+./www.eecs.wsu.edu/~cs360/fs.html:      ---------------------------------------------------------------------
+./www.eecs.wsu.edu/~cs360/fs.html:    Assume read(fd, fbuf[ ], BLKSIZE) syscall of non-special file. 
+./www.eecs.wsu.edu/~cs360/fs.html:(8). Minode contains the in-memory INODE of the file. INODE.i_block[ ] contains
+./www.eecs.wsu.edu/~cs360/fs.html:      ---------------- Upper half of disk driver -----------------
+./www.eecs.wsu.edu/~cs360/fs.html:      --------------- Lower half of disk driver -----------------
+./www.eecs.wsu.edu/~cs360/fs.html: | < ---------------- Kernel -------------------->  | < ------  Device ------>
+./www.eecs.wsu.edu/~cs360/fs.html:(1).  PROC       (2). root / ------> minode[0]      |         rootDev
+./www.eecs.wsu.edu/~cs360/fs.html:     ------                        ============     |    ====================
+./www.eecs.wsu.edu/~cs360/fs.html:     |    |                        | --------  |    |    ====================
+./www.eecs.wsu.edu/~cs360/fs.html:     |cwd -----------------------> |(rootDev,2)|    |  
+./www.eecs.wsu.edu/~cs360/fs.html:     | .------>  openTable[ ]      | mtabPtr   |    |
+./www.eecs.wsu.edu/~cs360/fs.html:     |    |     ---------------    | lock      |    |
+./www.eecs.wsu.edu/~cs360/fs.html:     ------     |mode=R|W|RW|A|    ============     |
+./www.eecs.wsu.edu/~cs360/fs.html:                |minodePtr ------>  minode[ ]       |        BlockDevice
+./www.eecs.wsu.edu/~cs360/fs.html:                ---------------    |  INODE    |    |    | INODE -> blocks|
+./www.eecs.wsu.edu/~cs360/fs.html:                                   |-----------|    |     ==================
+./www.eecs.wsu.edu/~cs360/fs.html:                ------- 0 --------- 1 --------      |
+./www.eecs.wsu.edu/~cs360/fs.html:                ------------------------------      |
+./www.eecs.wsu.edu/~cs360/fs.html:  ---------------------------------------------------------------------------
+./www.eecs.wsu.edu/~cs360/fs.html:points to the in-memory INODE of the PROC's Current Working Directory. 
+./www.eecs.wsu.edu/~cs360/fs.html:(2) is the root pointer of the file system, which points to the in-memory root 
+./www.eecs.wsu.edu/~cs360/fs.html:system. In the in-memory INODE of the mount point, the mounted flag is turned on
+./www.eecs.wsu.edu/~cs360/fs.html:table entry, mntPointPtr points back at the in-memory INODE of the mount point.
+./www.eecs.wsu.edu/~cs360/fs.html:As will be shown later, these doubly-linked pointers allow us to cross mount 
+./www.eecs.wsu.edu/~cs360/fs.html:array points to an openTable, which points to the in-memory INODE of the opened
+./www.eecs.wsu.edu/~cs360/fs.html:(4) is an in-memory INODE. Whenever a file or directory is needed, its INODE
+./www.eecs.wsu.edu/~cs360/fs.html:The lock field is to ensure that an in-memory INODE can only be accessed by one
+./www.eecs.wsu.edu/~cs360/fs.html:device name, device number and a pointer to in-memory INODE of the mount point.
+./www.eecs.wsu.edu/~cs360/fs.html:Level-1 deals with traversing the file system tree. It contains the following
+./www.eecs.wsu.edu/~cs360/fs.html:   -------------------- Level-1 of FS ----------------------------
+./www.eecs.wsu.edu/~cs360/fs.html:  -----------------------------------------------------------------
+./www.eecs.wsu.edu/~cs360/fs.html:   User level programs that make use of level-1 functions include
+./www.eecs.wsu.edu/~cs360/fs.html:which can be used to test the level-1 implementation.
+./www.eecs.wsu.edu/~cs360/fs.html:Level-2 deals with file contents. It contains the following files, which
+./www.eecs.wsu.edu/~cs360/fs.html:   ---------------------- Level-2 of FS -------------------------------
+./www.eecs.wsu.edu/~cs360/fs.html:Level-3 implements mount and umount operations and file protection.
+./www.eecs.wsu.edu/~cs360/fs.html:   ---------------------- Level-3 of FS ------------------------------
+./www.eecs.wsu.edu/~cs360/fs.html:   file-locking        : lock/unlock files
+./www.eecs.wsu.edu/~cs360/fs.html:   ------------------------------------------------------------------
+./www.eecs.wsu.edu/~cs360/fs.html:           // --------        --------
+./www.eecs.wsu.edu/~cs360/fs.html:is a standard technique used in all Unix-like systems. It makes the I/O
+./www.eecs.wsu.edu/~cs360/fs.html:Hopefully, this also answers an age-old question from many curious students,
+./www.eecs.wsu.edu/~cs360/fs.html:which returns a pointer to a dirent struct on each call. This calls for a user-
+./www.eecs.wsu.edu/~cs360/fs.html:user-leverl library stream I/O, we shall implement opendir() and readir() as
+./www.eecs.wsu.edu/~cs360/sh.html:            -----------------------------------
+./www.eecs.wsu.edu/~cs360/sh.html:            -----------------------------------
+./www.eecs.wsu.edu/~cs360/sh.html:   sh statements include all Unix commands, with I/O re-directions.
+./www.eecs.wsu.edu/~cs360/sh.html:3. Command-line parameters:
+./www.eecs.wsu.edu/~cs360/sh.html:   $* = ALL command-line parameter (strings) $1 $2 ....
+./www.eecs.wsu.edu/~cs360/sh.html:   Sh has many built-in variables, e.g. PATH, HOME.
+./www.eecs.wsu.edu/~cs360/sh.html:      echo -n "enter yes or no "
+./www.eecs.wsu.edu/~cs360/sh.html:7-1. if-else-fi statement
+./www.eecs.wsu.edu/~cs360/sh.html: In contrast, the operators -eq, -ne, -lt, -gt compare them as (integer)
+./www.eecs.wsu.edu/~cs360/sh.html:   if [ "123" -eq "0123" ] is true. 
+./www.eecs.wsu.edu/~cs360/sh.html: if [ -e name ]      test whether file name exists
+./www.eecs.wsu.edu/~cs360/sh.html: if [ -f name ]      test whether name is a (REG) file
+./www.eecs.wsu.edu/~cs360/sh.html: if [ -d name ]      test whether name is a DIR
+./www.eecs.wsu.edu/~cs360/sh.html: if [ -r name ]      test whether name is readable; also -w,-x
+./www.eecs.wsu.edu/~cs360/sh.html: if [ f1 -ef f2 ]    test whether f1, f2 are the SAME file
+./www.eecs.wsu.edu/~cs360/sh.html:7-2. for statement in sh:
+./www.eecs.wsu.edu/~cs360/sh.html:     ------------------------------------------------------------------
+./www.eecs.wsu.edu/~cs360/sh.html:          if [ -f $NAME ]; then
+./www.eecs.wsu.edu/~cs360/sh.html:      ----------------------------------------------------------------
+./www.eecs.wsu.edu/~cs360/sh.html:          echo $NAME      ==>  all command-line param strings
+./www.eecs.wsu.edu/~cs360/sh.html:          if [ -f $NAME ]; then
+./www.eecs.wsu.edu/~cs360/sh.html:          if [ -d $NAME ]; then
+./www.eecs.wsu.edu/~cs360/sh.html:     ----------------------------------------------------------------
+./www.eecs.wsu.edu/~cs360/sh.html:7-3. while [ condition ]
+./www.eecs.wsu.edu/~cs360/sh.html:  -------------------------------------------------------------------
+./www.eecs.wsu.edu/~cs360/sh.html:  --------------------------------------------------------------------
+./www.eecs.wsu.edu/~cs360/sh.html:7-4 Other Flow-Control statements:
+./www.eecs.wsu.edu/~cs360/sh.html:        echo -n "enter your answer : "
+./www.eecs.wsu.edu/~cs360/sh.html:    case statement (SELF-STUDY)
+./www.eecs.wsu.edu/~cs360/sh.html:7-5. break and continue statements:
+./www.eecs.wsu.edu/~cs360/sh.html:    --------------------------------------------------------
+./www.eecs.wsu.edu/~cs360/sh.html:                if [ -f $1 ]; then
+./www.eecs.wsu.edu/~cs360/sh.html:     -------------------------------------------------------------
+./www.eecs.wsu.edu/~cs360/sh.html:   When entering a sh command, we may instruct sh to re-direct I/O
+./www.eecs.wsu.edu/~cs360/sh.html:      -------------------------------------------------
+./www.eecs.wsu.edu/~cs360/sh.html:      >  file   stdout goes to file, which will be created if non-existing.
+./www.eecs.wsu.edu/~cs360/sh.html:                ---------------------------------------------
+./www.eecs.wsu.edu/~cs360/sh.html:                --------------------------------------------
+./www.eecs.wsu.edu/~cs360/sh.html:                -------------------------------------------
+./www.eecs.wsu.edu/~cs360/sh.html:      --------------------------------------------------
+./www.eecs.wsu.edu/~cs360/sh.html:#----------------- sh mycp program example:-----------------------------
+./www.eecs.wsu.edu/~cs360/sh.html:#----------------------------------------------------------------------
+./www.eecs.wsu.edu/~cs360/sh.html: if [ ! -e $1 ]; then
+./www.eecs.wsu.edu/~cs360/sh.html: if [ $1 -ef $2 ]; then
+./www.eecs.wsu.edu/~cs360/sh.html: if [ -L $1 ]; then
+./www.eecs.wsu.edu/~cs360/sh.html:    ln -s $link $2
+./www.eecs.wsu.edu/~cs360/sh.html:if [ $# -lt 2 ]; then
+./www.eecs.wsu.edu/~cs360/sh.html:if [ ! -e $1 ]; then
+./www.eecs.wsu.edu/~cs360/sh.html:if [ ! -f $1 ]; then
+./www.eecs.wsu.edu/~cs360/sh.html:if [ ! -e $2 ]; then     
+./www.eecs.wsu.edu/~cs360/sh.html:if [ -f $2 ]; then
+./www.eecs.wsu.edu/~cs360/sh.html:if [ -d $2 ]; then
+./www.eecs.wsu.edu/~cs360/sh.html:#------------------------------------------------------------------
+./www.eecs.wsu.edu/~cs360/sh.html:     ------------------------------------------------------------------
+./www.eecs.wsu.edu/~cs360/sh.html:          if [ -f $NAME ]; then
+./www.eecs.wsu.edu/~cs360/sh.html:      ----------------------------------------------------------------
+./www.eecs.wsu.edu/~cs360/LAB3.sp15.html:                     WORK IN 2-PERSON TEAMS
+./www.eecs.wsu.edu/~cs360/LAB3.sp15.html:   Per LAB4 Pre-work.
+./www.eecs.wsu.edu/~cs360/LAB3.sp15.html:   Modify the server/client programs in the pre-lab to do the following:
+./www.eecs.wsu.edu/~cs360/LAB3.sp15.html:              ----------------  
+./www.eecs.wsu.edu/~cs360/LAB3.sp15.html:           -----------------
+./www.eecs.wsu.edu/~cs360/LAB3.sp15.html:(1). Make each command a fixed-length string, e.g. of MAX=256 bytes.
+./www.eecs.wsu.edu/~cs360/LAB3.sp15.html:             reads whatever is available in the socket. Using fixed-length 
+./www.eecs.wsu.edu/~cs360/LAB3.sp15.html:   -------------------------------    -------------------------------
+./www.eecs.wsu.edu/~cs360/timetable.html:---------------------------------------------------------------------
+./www.eecs.wsu.edu/~cs360/timetable.html: 4       12 13 14 15 16 17 18    read, write, EXAM#2 on 4-17
+./www.eecs.wsu.edu/~cs360/timetable.html:---------------------------------------------------------------------
+./www.eecs.wsu.edu/~cs360/link.html:                 ------------------------        -------------------------
+./www.eecs.wsu.edu/~cs360/link.html:                ------|-----------------        ------|------------------
+./www.eecs.wsu.edu/~cs360/link.html:                    INODE <----------------------------
+./www.eecs.wsu.edu/~cs360/link.html:(1). get the INODE of /a/b/c into memory: mip->minode[ ]
+./www.eecs.wsu.edu/~cs360/proj14.html:  2. May work in 2-person teams. However, a comprehensive INTERVIEW will 
+./www.eecs.wsu.edu/~cs360/proj14.html:       ----------------  Project grading standards: --------------------
+./www.eecs.wsu.edu/~cs360/proj14.html:       ------------------------------------------------------------------
+./www.eecs.wsu.edu/~cs360/proj14.html:             read-write REGULAR files
+./www.eecs.wsu.edu/~cs360/proj14.html:             mount-umount EXT2 file systems
+./www.eecs.wsu.edu/~cs360/proj14.html:             ---------------------------
+./www.eecs.wsu.edu/~cs360/proj14.html:            ----------------------------
+./www.eecs.wsu.edu/~cs360/mount_umount.html:     V        |---- PointerToCWD ------|                ||
+./www.eecs.wsu.edu/~cs360/mount_umount.html: |pid, ppid   |                         | -------  |    ||   ================== 
+./www.eecs.wsu.edu/~cs360/mount_umount.html: |cwd --------|                         | refCount |    ||*********************
+./www.eecs.wsu.edu/~cs360/mount_umount.html: | ------                               | mTablePtr| 
+./www.eecs.wsu.edu/~cs360/mount_umount.html: | ------                               |==========|<--<-        
+./www.eecs.wsu.edu/~cs360/mount_umount.html: | ------                               |  INODE   |    |      
+./www.eecs.wsu.edu/~cs360/mount_umount.html: | ------                               | -------  |    | 
+./www.eecs.wsu.edu/~cs360/mount_umount.html:                                     <--| mTablePtr|    |
+./www.eecs.wsu.edu/~cs360/mount_umount.html:                   |  ------- 0 --------- 1 ---------   |     --------------
+./www.eecs.wsu.edu/~cs360/mount_umount.html:                   |--| MinodePtr    |  MinodePtr-|----->     --------------
+./www.eecs.wsu.edu/~cs360/mount_umount.html:                      -------------------------------
+./www.eecs.wsu.edu/~cs360/mount_umount.html:                      ------------------------------- 
+./www.eecs.wsu.edu/~cs360/read_ext2.html:     =======   |--> OFT oft[ ]                        |
+./www.eecs.wsu.edu/~cs360/read_ext2.html:     | . ..|   |   |minodePtr ------->  minode[ ]     |      BlockDevice
+./www.eecs.wsu.edu/~cs360/read_ext2.html: fd: | .------>|   |offset    |       |  INODE    |   |   | INODE -> blocks|
+./www.eecs.wsu.edu/~cs360/read_ext2.html:     |     |       |===|======|       |-----------|   |   ==================
+./www.eecs.wsu.edu/~cs360/read_ext2.html:                       |<------- avil ------->|
+./www.eecs.wsu.edu/~cs360/read_ext2.html:    -------------------|-----------------------
+./www.eecs.wsu.edu/~cs360/read_ext2.html:    -------------------|---|------------------|-
+./www.eecs.wsu.edu/~cs360/read_ext2.html:------------------------------------------------------------------------------
+./www.eecs.wsu.edu/~cs360/read_ext2.html:     0 to file_size - 1. As the figure shows, the current byte position, offset
+./www.eecs.wsu.edu/~cs360/read_ext2.html:             remain = BLKSIZE - start. 
+./www.eecs.wsu.edu/~cs360/read_ext2.html:             avil = file_size - offset 
+./www.eecs.wsu.edu/~cs360/read_ext2.html:(5). ============ Algorithm and pseudo-code of myread() =======================
+./www.eecs.wsu.edu/~cs360/read_ext2.html:    avil = fileSize - OFT's offset // number of bytes still available in file.
+./www.eecs.wsu.edu/~cs360/read_ext2.html:             lbk       = oftp->offset / BLKSIZE;
+./www.eecs.wsu.edu/~cs360/read_ext2.html:             startByte = oftp->offset % BLKSIZE;
+./www.eecs.wsu.edu/~cs360/read_ext2.html:           blk = mip->INODE.i_block[lbk]; // map LOGICAL lbk to PHYSICAL blk
+./www.eecs.wsu.edu/~cs360/read_ext2.html:       get_block(mip->dev, blk, readbuf);
+./www.eecs.wsu.edu/~cs360/read_ext2.html:       remain = BLKSIZE - startByte;   // number of bytes remain in readbuf[]
+./www.eecs.wsu.edu/~cs360/read_ext2.html:             oftp->offset++;           // advance offset 
+./www.eecs.wsu.edu/~cs360/read_ext2.html:             avil--; nbytes--;  remain--;
+./www.eecs.wsu.edu/~cs360/mkdir_creat.html:            360 File System: HOW TO mkdir-creat
+./www.eecs.wsu.edu/~cs360/mkdir_creat.html:            = "a/b/c" start mip = running->cwd;
+./www.eecs.wsu.edu/~cs360/mkdir_creat.html:4. Write contents to mip->INODE to make it as a DIR.
+./www.eecs.wsu.edu/~cs360/mkdir_creat.html:  INODE *ip = &mip->INODE;
+./www.eecs.wsu.edu/~cs360/mkdir_creat.html:  Use ip-> to acess the INODE fields:
+./www.eecs.wsu.edu/~cs360/mkdir_creat.html:  i_uid  = running->uid;	// Owner uid 
+./www.eecs.wsu.edu/~cs360/mkdir_creat.html:  i_gid  = running->gid;	// Group Id
+./www.eecs.wsu.edu/~cs360/mkdir_creat.html:  i_blocks = 2;                	// LINUX: Blocks count in 512-byte chunks 
+./www.eecs.wsu.edu/~cs360/mkdir_creat.html:  mip->dirty = 1;               // mark minode dirty
+./www.eecs.wsu.edu/~cs360/mkdir_creat.html:   ----------------------------------------------------------------------
+./www.eecs.wsu.edu/~cs360/mkdir_creat.html:   ----------------------------------------------------------------------
+./www.eecs.wsu.edu/~cs360/mkdir_creat.html:  --|-4---2----2--|----|---------|--------- rlen ->------------------------|
+./www.eecs.wsu.edu/~cs360/mkdir_creat.html:  --------------------------------------------------------------------------
+./www.eecs.wsu.edu/~cs360/mkdir_creat.html:       get_block(parent->dev, parent->INODE.i_block[i], buf);
+./www.eecs.wsu.edu/~cs360/mkdir_creat.html:       // step to LAST entry in block: int blk = parent->INODE.i_block[i];
+./www.eecs.wsu.edu/~cs360/mkdir_creat.html:       while (cp + dp->rec_len < buf + BLKSIZE){
+./www.eecs.wsu.edu/~cs360/mkdir_creat.html:          c = dp->name[dp->name_len];
+./www.eecs.wsu.edu/~cs360/mkdir_creat.html:          dp->name[dp->name_len] = 0;
+./www.eecs.wsu.edu/~cs360/mkdir_creat.html:          printf("%s ", dp->name);
+./www.eecs.wsu.edu/~cs360/mkdir_creat.html:          dp->name[dp->name_len] = c;
+./www.eecs.wsu.edu/~cs360/mkdir_creat.html:          cp += dp->rec_len;
+./www.eecs.wsu.edu/~cs360/mkdir_creat.html:     Let remain = LAST entry's rec_len - its IDEAL_LENGTH;
+./www.eecs.wsu.edu/~cs360/mkdir_creat.html:  --|-4---2----2--|----|---------|--------- rlen ->------------------------|
+./www.eecs.wsu.edu/~cs360/mkdir_creat.html:  --------------------------------------------------------------------------
+./www.eecs.wsu.edu/~cs360/mkdir_creat.html:  --|-4---2----2--|----|---------|----ideal_len-----|--- rlen=remain ------|
+./www.eecs.wsu.edu/~cs360/mkdir_creat.html:  --------------------------------------------------------------------------
+./www.eecs.wsu.edu/~cs360/mkdir_creat.html:  |-------------------- rlen = BLKSIZE -------------------------------------
+./www.eecs.wsu.edu/~cs360/mkdir_creat.html:  --------------------------------------------------------------------------
+./www.eecs.wsu.edu/~cs360/mkdir_creat.html:        permission bits to (default) rw-r--r--, 
+./www.eecs.wsu.edu/~cs360/mkdir_creat.html:         mount -o loop disk /mnt
+./www.eecs.wsu.edu/~cs360/mkdir_creat.html:         ls -l /mnt
+./www.eecs.wsu.edu/~cs360/misc.1.html:                     Misc Level-1 Functions
+./www.eecs.wsu.edu/~cs360/misc.1.html:                          or you may use +x, -r, +w, etc fancier formats.
+./www.eecs.wsu.edu/~cs360/list.html:                      ---------------------------------- (NOT in a.out)
+./www.eecs.wsu.edu/~cs360/list.html:                      -------------------------------------------------- 
+./www.eecs.wsu.edu/~cs360/list.html:                      --------------------------------------------------
+./www.eecs.wsu.edu/~cs360/list.html:   ls -l a.out : show the total size of a.out in bytes
+./www.eecs.wsu.edu/~cs360/list.html:2. Run-time memory image of a.out:
+./www.eecs.wsu.edu/~cs360/list.html:       -------------------------------------------
+./www.eecs.wsu.edu/~cs360/list.html:       --|-------------------------------------|--
+./www.eecs.wsu.edu/~cs360/list.html:NODE *mylist,       node[N]; // all in the bss section of run-time image
+./www.eecs.wsu.edu/~cs360/list.html:     -------        --0----1----2-----------------------------------9---
+./www.eecs.wsu.edu/~cs360/list.html:     -------        |name|    |    |                              |    |
+./www.eecs.wsu.edu/~cs360/list.html:                    ----------------------------------------------------
+./www.eecs.wsu.edu/~cs360/list.html:     strcpy(p->name, name);
+./www.eecs.wsu.edu/~cs360/list.html:     p->id = i;
+./www.eecs.wsu.edu/~cs360/list.html:     p->next = p+1;        // node[i].next = &node[i+1];
+./www.eecs.wsu.edu/~cs360/list.html:  node[N-1].next = 0;
+./www.eecs.wsu.edu/~cs360/list.html:     printf("[%s %d]->", p->name, p->id);
+./www.eecs.wsu.edu/~cs360/list.html:      p = p->next;
+./www.eecs.wsu.edu/~cs360/list.html:     -------    ------
+./www.eecs.wsu.edu/~cs360/list.html:     |  ?  |    | ?  | globals are in bss ----|
+./www.eecs.wsu.edu/~cs360/list.html:     -------    ------             ---------------------------------
+./www.eecs.wsu.edu/~cs360/list.html:{                                  ---------------------------------
+./www.eecs.wsu.edu/~cs360/list.html:  node = malloc(N*sizeof(NODE)); // node -> N*72 bytes area in HEAP
+./www.eecs.wsu.edu/~cs360/list.html:     strcpy(p->name, name);
+./www.eecs.wsu.edu/~cs360/list.html:     p->id = i;
+./www.eecs.wsu.edu/~cs360/list.html:     p->next = p+1;        // node[i].next = &node[i+1];
+./www.eecs.wsu.edu/~cs360/list.html:  node[N-1].next = 0;
+./www.eecs.wsu.edu/~cs360/list.html:  node[N-1].next = 0;
+./www.eecs.wsu.edu/~cs360/list.html:  node[N-1].next = 0;
+./www.eecs.wsu.edu/~cs360/list.html:  node[N-1].next = 0;
+./www.eecs.wsu.edu/~cs360/list.html:     freelist = freelist->next;
+./www.eecs.wsu.edu/~cs360/list.html:  p->next = freelist;
+./www.eecs.wsu.edu/~cs360/list.html:    return -1;
+./www.eecs.wsu.edu/~cs360/list.html:  strcpy(p->name, name);
+./www.eecs.wsu.edu/~cs360/list.html:     p->next = 0;
+./www.eecs.wsu.edu/~cs360/list.html:  while(q->next)
+./www.eecs.wsu.edu/~cs360/list.html:    q = q->next;
+./www.eecs.wsu.edu/~cs360/list.html:  q->next = p;
+./www.eecs.wsu.edu/~cs360/list.html:  p->next = 0;
+./www.eecs.wsu.edu/~cs360/list.html:     return -1;
+./www.eecs.wsu.edu/~cs360/list.html:  strcpy(p->name, name);
+./www.eecs.wsu.edu/~cs360/list.html:     p->next = 0;
+./www.eecs.wsu.edu/~cs360/list.html:  while(q->next)
+./www.eecs.wsu.edu/~cs360/list.html:    q = q->next;
+./www.eecs.wsu.edu/~cs360/list.html:  q->next = p;
+./www.eecs.wsu.edu/~cs360/list.html:  p->next = 0;
+./www.eecs.wsu.edu/~cs360/list.html:  node[N-1].next = 0;
+./www.eecs.wsu.edu/~cs360/list.html:     freelist = freelist->next;
+./www.eecs.wsu.edu/~cs360/list.html:  p->next = freelist;
+./www.eecs.wsu.edu/~cs360/list.html:    return -1;
+./www.eecs.wsu.edu/~cs360/list.html:  strcpy(p->name, name);
+./www.eecs.wsu.edu/~cs360/list.html:     p->next = 0;
+./www.eecs.wsu.edu/~cs360/list.html:  while(q->next)
+./www.eecs.wsu.edu/~cs360/list.html:    q = q->next;
+./www.eecs.wsu.edu/~cs360/list.html:  q->next = p;
+./www.eecs.wsu.edu/~cs360/list.html:  p->next = 0;
+./www.eecs.wsu.edu/~cs360/list.html:    if (strcmp(p->name, name)==0)
+./www.eecs.wsu.edu/~cs360/list.html:    p = p->next;
+./www.eecs.wsu.edu/~cs360/list.html:     printf("%s -> ", p->name);
+./www.eecs.wsu.edu/~cs360/list.html:      p = p->next;
+./www.eecs.wsu.edu/~cs360/list.html:  node[N-1].next = 0;
+./www.eecs.wsu.edu/~cs360/list.html:     freelist = freelist->next;
+./www.eecs.wsu.edu/~cs360/list.html:  p->next = freelist;
+./www.eecs.wsu.edu/~cs360/list.html:  buf[strlen(buf)-1] = 0;   // kill CR key
+./www.eecs.wsu.edu/~cs360/list.html:  buf[strlen(buf)-1] = 0;   // kill CR key
+./www.eecs.wsu.edu/~cs360/list.html:    return -1;
+./www.eecs.wsu.edu/~cs360/list.html:  strcpy(p->name, name);
+./www.eecs.wsu.edu/~cs360/list.html:     p->next = 0;
+./www.eecs.wsu.edu/~cs360/list.html:  while(q->next)
+./www.eecs.wsu.edu/~cs360/list.html:    q = q->next;
+./www.eecs.wsu.edu/~cs360/list.html:  q->next = p;
+./www.eecs.wsu.edu/~cs360/list.html:  p->next = 0;
+./www.eecs.wsu.edu/~cs360/list.html:    if (strcmp(p->name, name)==0)
+./www.eecs.wsu.edu/~cs360/list.html:    p = p->next;
+./www.eecs.wsu.edu/~cs360/list.html:  if (strcmp(p->name, name)==0){
+./www.eecs.wsu.edu/~cs360/list.html:    *list = p->next;
+./www.eecs.wsu.edu/~cs360/list.html:  q = p->next;
+./www.eecs.wsu.edu/~cs360/list.html:    if (strcmp(q->name, name)==0){
+./www.eecs.wsu.edu/~cs360/list.html:      p->next = q->next;
+./www.eecs.wsu.edu/~cs360/list.html:    q = q->next;
+./www.eecs.wsu.edu/~cs360/ass.F14.html:#----------------------------------------------------
+./www.eecs.wsu.edu/~cs360/ass.F14.html:#----------------------------|-----------------------
+./www.eecs.wsu.edu/~cs360/ass.F14.html:#------ call printf() to print x and y -----------------
+./www.eecs.wsu.edu/~cs360/ass.F14.html:#-------------------------------------------------------
+./www.eecs.wsu.edu/~cs360/ass.F14.html:# (2):----- ACTUAL CODE -----------
+./www.eecs.wsu.edu/~cs360/ass.F14.html:#----------------------------------     
+./www.eecs.wsu.edu/~cs360/ext2fd.html:      mount -o loop mydisk /mnt;  rm -r /mnt/*;   umount /mnt
+./www.eecs.wsu.edu/~cs360/ext2fd.html:	u32	s_first_ino; 		// First non-reserved inode 
+./www.eecs.wsu.edu/~cs360/ext2fd.html:  // some MORE non-essential fileds
+./www.eecs.wsu.edu/~cs360/ext2fd.html:	char name[EXT2_NAME_LEN];  // File name: 1-255 chars, no NULL byte
+./www.eecs.wsu.edu/~cs360/ext2fd.html:-------------------------------------------------------------------------------
+./www.eecs.wsu.edu/~cs360/ext2fd.html: A (well-planned) city has M blocks, numbered 0,1,2,..,M-1. Each block has N 
+./www.eecs.wsu.edu/~cs360/ext2fd.html: houses, numbered 0,1,..,N-1. Each house has a unique BLOCK address in the form
+./www.eecs.wsu.edu/~cs360/ext2fd.html:                LA = 0,1,2,..,N-1, N,N+1,......
+./www.eecs.wsu.edu/~cs360/ext2fd.html:   Solution:  block# = (i_number - 1) / INODES_PER_BLOCK + inode_table;
+./www.eecs.wsu.edu/~cs360/ext2fd.html:              inode# = (i_number - 1) % INODES_PER_BLOCK;
+./www.eecs.wsu.edu/~cs360/ext2fd.html:   TRY TO ANSWER FOR YOURSELF: WHY i_number-1? and WHY + inode_table
+./www.eecs.wsu.edu/~cs360/ext2fd.html:   4. Many other LINEAR < - > BLOCK conversion problems. 
+./www.eecs.wsu.edu/~cs360/syscall.html:   value >=0 means OK, -1 means BAD. An implicitly defined global int variable,
+./www.eecs.wsu.edu/~cs360/syscall.html:6-1. Link Files:
+./www.eecs.wsu.edu/~cs360/syscall.html:NOTE: Hard links can only be applied to non-DIR files. 
+./www.eecs.wsu.edu/~cs360/syscall.html:     The command   ln -s  oldpath newpath  
+./www.eecs.wsu.edu/~cs360/syscall.html:             ln -s   aVeryLongPathname                 a
+./www.eecs.wsu.edu/~cs360/syscall.html:             ln -s   aFileWhichMayBeChangedOften       b
+./www.eecs.wsu.edu/~cs360/syscall.html:traps are displayed in (the appropriate color of) RED under the ls -l command.
+./www.eecs.wsu.edu/~cs360/syscall.html:Also, if foo -> /a/b/c is a soft link file, the open("foo", 0) syscall, as 
+./www.eecs.wsu.edu/~cs360/syscall.html:    ln -s  oldpath newpath          symlink(char *oldpath, char *newpath)
+./www.eecs.wsu.edu/~cs360/syscall.html:6-2. File Status:
+./www.eecs.wsu.edu/~cs360/syscall.html:9-2-1. INODE:
+./www.eecs.wsu.edu/~cs360/syscall.html:6-2.2  The man pages of stat:
+./www.eecs.wsu.edu/~cs360/syscall.html:       stat, fstat, lstat - get file status
+./www.eecs.wsu.edu/~cs360/syscall.html:       lstat  is  identical to stat, except in the case of a sym-
+./www.eecs.wsu.edu/~cs360/syscall.html:       bolic link, where the link itself is stat-ed, not the file
+./www.eecs.wsu.edu/~cs360/syscall.html:       They  all return a stat structure, which contains the fol-
+./www.eecs.wsu.edu/~cs360/syscall.html:       is the length of the pathname it contains, without  trail-
+./www.eecs.wsu.edu/~cs360/syscall.html:       The value st_blocks gives the size of the file in 512-byte
+./www.eecs.wsu.edu/~cs360/syscall.html:       the file has holes.)  The value st_blksize gives the "pre-
+./www.eecs.wsu.edu/~cs360/syscall.html:       to a file in smaller chunks may cause an inefficient read-
+./www.eecs.wsu.edu/~cs360/syscall.html:       modify-rewrite.)
+./www.eecs.wsu.edu/~cs360/syscall.html:              S_ISLNK(m)  symbolic link? (Not in POSIX.1-1996.)
+./www.eecs.wsu.edu/~cs360/syscall.html:              S_ISSOCK(m) socket? (Not in POSIX.1-1996.)
+./www.eecs.wsu.edu/~cs360/syscall.html:       On success, zero is returned.  On error, -1  is  returned,
+./www.eecs.wsu.edu/~cs360/syscall.html:6-2.3 File Type and Permissions:
+./www.eecs.wsu.edu/~cs360/syscall.html:       ----------------------
+./www.eecs.wsu.edu/~cs360/syscall.html:       ----------------------
+./www.eecs.wsu.edu/~cs360/syscall.html:       -rwxr-xr-x             (REG file) 
+./www.eecs.wsu.edu/~cs360/syscall.html:       drwxr-xr-x             (DIR)
+./www.eecs.wsu.edu/~cs360/syscall.html:       lrw-r--r--             (LNK file)
+./www.eecs.wsu.edu/~cs360/syscall.html:6-3. HOW TO read DIR Entries:
+./www.eecs.wsu.edu/~cs360/syscall.html:6-4. HOW TO ls filename
+./www.eecs.wsu.edu/~cs360/syscall.html:char *t1 = "xwrxwrxwr-------";
+./www.eecs.wsu.edu/~cs360/syscall.html:char *t2 = "----------------";
+./www.eecs.wsu.edu/~cs360/syscall.html:  if ((sp->st_mode & 0xF000) == 0x8000)
+./www.eecs.wsu.edu/~cs360/syscall.html:     printf("%c",'-');
+./www.eecs.wsu.edu/~cs360/syscall.html:  if ((sp->st_mode & 0xF000) == 0x4000)
+./www.eecs.wsu.edu/~cs360/syscall.html:  if ((sp->st_mode & 0xF000) == 0xA000)
+./www.eecs.wsu.edu/~cs360/syscall.html:  for (i=8; i >= 0; i--){
+./www.eecs.wsu.edu/~cs360/syscall.html:    if (sp->st_mode & (1 << i))
+./www.eecs.wsu.edu/~cs360/syscall.html:  printf("%4d ",sp->st_nlink);
+./www.eecs.wsu.edu/~cs360/syscall.html:  printf("%4d ",sp->st_gid);
+./www.eecs.wsu.edu/~cs360/syscall.html:  printf("%4d ",sp->st_uid);
+./www.eecs.wsu.edu/~cs360/syscall.html:  printf("%8d ",sp->st_size);
+./www.eecs.wsu.edu/~cs360/syscall.html:  strcpy(ftime, ctime(&sp->st_ctime));
+./www.eecs.wsu.edu/~cs360/syscall.html:  ftime[strlen(ftime)-1] = 0;
+./www.eecs.wsu.edu/~cs360/syscall.html:  // print -> linkname if it's a symbolic file
+./www.eecs.wsu.edu/~cs360/syscall.html:  if ((sp->st_mode & 0xF000)== 0xA000){ // YOU FINISH THIS PART
+./www.eecs.wsu.edu/~cs360/syscall.html:     // printf(" -> %s", linkname);
+./www.eecs.wsu.edu/~cs360/syscall.html:  if (S_ISDIR(sp->st_mode))
+./www.eecs.wsu.edu/~cs360/LAB5.html:------------------------------------------------------------------------------
+./www.eecs.wsu.edu/~cs360/LAB5.html: =============  |-pointerToCWD-> ============    ||   ==================
+./www.eecs.wsu.edu/~cs360/LAB5.html: |pid = 1    |  |                | -------  |    ||   ================== 
+./www.eecs.wsu.edu/~cs360/LAB5.html: |cwd --------->|                | refCount |    ||*********************
+./www.eecs.wsu.edu/~cs360/LAB5.html: | ------    |                   |          |
+./www.eecs.wsu.edu/~cs360/LAB5.html: | - ALL 0 - |                   |==========|         
+./www.eecs.wsu.edu/~cs360/LAB5.html: | ------    |                   |  INODE   |          
+./www.eecs.wsu.edu/~cs360/LAB5.html: | ------    |                   | -------  |   
+./www.eecs.wsu.edu/~cs360/LAB5.html:    cwd ----> root minode        
+./www.eecs.wsu.edu/~cs360/LAB5.html:-----------------------------------------------------------------------------
+./www.eecs.wsu.edu/~cs360/LAB5.html:           ---------------------------
+./www.eecs.wsu.edu/~cs360/LAB5.html:             -------------
+./www.eecs.wsu.edu/~cs360/LAB5.html:     (2). PROC *running -> P0 -> P1 -> P0; (i.e. a circular link list)
+./www.eecs.wsu.edu/~cs360/LAB5.html:   if (mip->INODE is a file)
+./www.eecs.wsu.edu/~cs360/LAB5.html:   INODE *ip = &mip->INODE;
+./www.eecs.wsu.edu/~cs360/LAB5.html:   use ip->i_mode to print  [-|l|d] rwxrwxrwx 
+./www.eecs.wsu.edu/~cs360/LAB5.html:   use ip->OTHER FIELDs to print:  link  gid  uid  size  date  name
+./www.eecs.wsu.edu/~cs360/LAB5.html:   if ip->i_mode is a LNK file:
+./www.eecs.wsu.edu/~cs360/LAB5.html:      printf(" -> %s\n", (char *)ip->i_block);
+./www.eecs.wsu.edu/~cs360/LAB5.html:   INODE *ip = &mip->INODE;
+./www.eecs.wsu.edu/~cs360/LAB5.html:      VERIFY mip->INODE is a DIR;
+./www.eecs.wsu.edu/~cs360/LAB5.html:        line[strlen(line)-1] = 0;  // kill the \n char at end
+./www.eecs.wsu.edu/~cs360/LAB5.html:            pwd(running->cwd);
+./www.eecs.wsu.edu/~cs360/LAB5.html:            quit(); // write back any dirty in-memory INODE; exit(0);
+./www.eecs.wsu.edu/~cs360/LAB5.html:      printf("P%d running: ", running->pid);
+./www.eecs.wsu.edu/~cs360/LAB5.html:      line[strlen(line)-1] = 0;  // kill the \n char at end
+./www.eecs.wsu.edu/~cs360/LAB5.html:           ------------ LEVEL 1 -------------------
+./www.eecs.wsu.edu/~cs360/LAB5.html:           -------------- LEVEL 2 ------------------
+./www.eecs.wsu.edu/~cs360/LAB5.html:           ------------- LEVEL 3 -------------------
+./www.eecs.wsu.edu/~cs360/LAB5.html: INSTEAD OF A switch-case table, you MUST use a Table of Function Pointers
+./www.eecs.wsu.edu/~cs360/PROC.html:       ------------------------------------------ 
+./www.eecs.wsu.edu/~cs360/PROC.html:       ------------------------------------------
+./www.eecs.wsu.edu/~cs360/PROC.html:        0 for success or -1 for error. In case of error, the global int 
+./www.eecs.wsu.edu/~cs360/PROC.html:5-1. PROC structure in Kernel
+./www.eecs.wsu.edu/~cs360/PROC.html:5-2. fork():  Usage:   int pid = fork();
+./www.eecs.wsu.edu/~cs360/PROC.html:     fork() creates a child process and returns the child's pid or -1 if error.
+./www.eecs.wsu.edu/~cs360/PROC.html:              --------                    |      -------
+./www.eecs.wsu.edu/~cs360/PROC.html:    Umode :    Ucodei  pid=fork(); <-     |      Ucodej  pid=fork();<-
+./www.eecs.wsu.edu/~cs360/PROC.html:   (1). The left-hand side shows the images of a process Pi, which issues
+./www.eecs.wsu.edu/~cs360/PROC.html:5-3. pid = wait(int *status);  // int status in parent's image 
+./www.eecs.wsu.edu/~cs360/PROC.html:            As usual, it returns -1 if error, e.g. caller has no child.
+./www.eecs.wsu.edu/~cs360/PROC.html:5-4. Execution Order:
+./www.eecs.wsu.edu/~cs360/PROC.html:5-5. Parent Process
+./www.eecs.wsu.edu/~cs360/PROC.html:5-5. nice(VALUE); 
+./www.eecs.wsu.edu/~cs360/PROC.html:   never returned to, unless exec() fails, e.g. filename is non-executable.
+./www.eecs.wsu.edu/~cs360/PROC.html:----------- cc to a.out ---------------------------------
+./www.eecs.wsu.edu/~cs360/PROC.html:----------- cc to b.out ---------------------------------
+./www.eecs.wsu.edu/~cs360/PROC.html:----------------------------------------------------------
+./www.eecs.wsu.edu/~cs360/PROC.html:7-1. Stream FILEs and File Descriptors:
+./www.eecs.wsu.edu/~cs360/PROC.html:   FILE *stdin --->   FILE structure
+./www.eecs.wsu.edu/~cs360/PROC.html:                    ----------------------------------
+./www.eecs.wsu.edu/~cs360/PROC.html:                    ----------------------------------
+./www.eecs.wsu.edu/~cs360/PROC.html:   FILE *stdout --->  FILE structure
+./www.eecs.wsu.edu/~cs360/PROC.html:                    ----------------------------------
+./www.eecs.wsu.edu/~cs360/PROC.html:                    ----------------------------------
+./www.eecs.wsu.edu/~cs360/PROC.html:   FILE *stderr --->  FILE structure
+./www.eecs.wsu.edu/~cs360/PROC.html:                    ----------------------------------
+./www.eecs.wsu.edu/~cs360/PROC.html:                    ----------------------------------
+./www.eecs.wsu.edu/~cs360/PROC.html:7-2. Stream I/O and System Call:
+./www.eecs.wsu.edu/~cs360/PROC.html:7-3 Use man open to read more on how to issue syscalls 
+./www.eecs.wsu.edu/~cs360/PROC.html:-----------------------------------------------------------------------------
+./www.eecs.wsu.edu/~cs360/PROC.html:8-1. Pipe: 
+./www.eecs.wsu.edu/~cs360/PROC.html:      -----------------------------------------------------------------    
+./www.eecs.wsu.edu/~cs360/PROC.html:      -----------------------------------------------------------------        
+./www.eecs.wsu.edu/~cs360/PROC.html:8-2. Pipe Programming Example:
+./www.eecs.wsu.edu/~cs360/PROC.html:--------------------- outputs of running a.out ---------------------
+./www.eecs.wsu.edu/~cs360/PROC.html:--------------------------------------------------------------------
+./www.eecs.wsu.edu/~cs360/PROC.html:8-3. Connect PIPE writer to PIPE reader:
+./www.eecs.wsu.edu/~cs360/planS15.html:               W. Richard Stevens, Addison-Wesley, 1992.
+./www.eecs.wsu.edu/~cs360/planS15.html:                           335-3769, kwang@eecs.wsu.edu
+./www.eecs.wsu.edu/~cs360/planS15.html:                           Office Hours: MW 9:10-10:00 AM
+./www.eecs.wsu.edu/~cs360/planS15.html:     images. Symbolic debugger and run-time support.
+./www.eecs.wsu.edu/~cs360/planS15.html:     System calls and low-level file I/O; open, close, read, write, 
+./www.eecs.wsu.edu/~cs360/planS15.html:     Streams and high-level file I/O; user space buffering, 
+./www.eecs.wsu.edu/~cs360/planS15.html:     relationship with low-level I/O,  char and line mode I/O. 
+./www.eecs.wsu.edu/~cs360/planS15.html:---------------------------------------------------------------------
+./www.eecs.wsu.edu/~cs360/planS15.html:---------------------------------------------------------------------
+./www.eecs.wsu.edu/~cs360/showblock.html:-------------------------------------------------------------------------------
+./www.eecs.wsu.edu/~cs360/showblock.html:1.       sudo apt-get install e2fslibs-dev
+./www.eecs.wsu.edu/~cs360/showblock.html:------------------------------------------------------------------------------ 
+./www.eecs.wsu.edu/~cs360/showblock.html: indirect, double-indirect) of the file.
+./www.eecs.wsu.edu/~cs360/showblock.html:                            |<----- n = 3  ---->|
+./www.eecs.wsu.edu/~cs360/showblock.html:   Denote the token strings by name[0], name[1], ..., name[n-1]
+./www.eecs.wsu.edu/~cs360/showblock.html:           if (name[0] matches dp->NAME)
+./www.eecs.wsu.edu/~cs360/showblock.html:              return dp->ino;
+./www.eecs.wsu.edu/~cs360/showblock.html:           cp += dp->rlen;         // advance cp by rlen in bytes
+./www.eecs.wsu.edu/~cs360/showblock.html:               (ino - 1) / 8    and   InodeBeginBlock    
+./www.eecs.wsu.edu/~cs360/showblock.html:               (ino - 1) % 8 
+./www.eecs.wsu.edu/~cs360/showblock.html:(7). Since Steps (5)-(6) will be repeated n times, you should write a function
+./www.eecs.wsu.edu/~cs360/showblock.html:     Assume:  n,  name[0], ...., name[n-1]   are globals
+./www.eecs.wsu.edu/~cs360/showblock.html:     ip --> INODE of /
+./www.eecs.wsu.edu/~cs360/showblock.html:         -------------------------------------------------------
+./www.eecs.wsu.edu/~cs360/showblock.html:         use inumber to read in its INODE and let ip --> this INODE 
+./www.eecs.wsu.edu/~cs360/showblock.html:     // if you reach here, you must have ip --> the INODE of pathname.
+./www.eecs.wsu.edu/~cs360/showblock.html:(9). Extract information from ip --> as required.
+./www.eecs.wsu.edu/~cs360/write_ext2.html:     =======   |--> OFT oft[ ]                        |
+./www.eecs.wsu.edu/~cs360/write_ext2.html:     | . ..|   |   |minodePtr ------->  minode[ ]     |      BlockDevice
+./www.eecs.wsu.edu/~cs360/write_ext2.html: fd: | .------>|   |offset    |       |  INODE    |   |   | INODE -> blocks|
+./www.eecs.wsu.edu/~cs360/write_ext2.html:     |     |       |===|======|       |-----------|   |   ==================
+./www.eecs.wsu.edu/~cs360/write_ext2.html:    -------------------|-----------------
+./www.eecs.wsu.edu/~cs360/write_ext2.html:    -------------------|-----------------
+./www.eecs.wsu.edu/~cs360/write_ext2.html:------------------------------------------------------------------------------
+./www.eecs.wsu.edu/~cs360/write_ext2.html:          lbk       = oftp->offset / BLKSIZE;
+./www.eecs.wsu.edu/~cs360/write_ext2.html:          startByte = oftp->offset % BLKSIZE;
+./www.eecs.wsu.edu/~cs360/write_ext2.html:    // write indirect and double-indirect blocks.
+./www.eecs.wsu.edu/~cs360/write_ext2.html:        if (ip->INODE.i_block[lbk] == 0){   // if no data block yet
+./www.eecs.wsu.edu/~cs360/write_ext2.html:           mip->INODE.i_block[lbk] = balloc(mip->dev);// MUST ALLOCATE a block
+./www.eecs.wsu.edu/~cs360/write_ext2.html:        blk = mip->INODE.i_block[lbk];      // blk should be a disk block now
+./www.eecs.wsu.edu/~cs360/write_ext2.html:     get_block(mip->dev, blk, wbuf);   // read disk block into wbuf[ ]  
+./www.eecs.wsu.edu/~cs360/write_ext2.html:     remain = BLKSIZE - startByte;     // number of BYTEs remain in this block
+./www.eecs.wsu.edu/~cs360/write_ext2.html:           nbytes--; remain--;         // dec counts
+./www.eecs.wsu.edu/~cs360/write_ext2.html:           oftp->offset++;             // advance offset
+./www.eecs.wsu.edu/~cs360/write_ext2.html:               mip->INODE.i_size++;    // inc file size (if offset > fileSize)
+./www.eecs.wsu.edu/~cs360/write_ext2.html:     put_block(mip->dev, blk, wbuf);   // write wbuf[ ] to disk
+./www.eecs.wsu.edu/~cs360/write_ext2.html:  mip->dirty = 1;       // mark mip dirty for iput() 
+./www.eecs.wsu.edu/~cs360/ASS5.html:             DUE: 2-25-2015: submit your work to ASS5
+./www.eecs.wsu.edu/~cs360/ASS5.html:        ------------------------------------
+./www.eecs.wsu.edu/~cs360/ASS5.html:        |       ------------------         |
+./www.eecs.wsu.edu/~cs360/ASS5.html:        |       ------------------         |
+./www.eecs.wsu.edu/~cs360/ASS5.html:        ------------------------------------
+./www.eecs.wsu.edu/~cs360/ASS5.html:             ~kcw/cgi-bin/mycgi 
+./www.eecs.wsu.edu/~cs360/ASS5.html:  which echos YOUR inputs and shows another input-submit window again.
+./www.eecs.wsu.edu/~cs360/ASS5.html:        public_html --- index.html 
+./www.eecs.wsu.edu/~cs360/ASS5.html:            cgi-bin ---- mycgi.c util.o
+./www.eecs.wsu.edu/~cs360/ASS5.html:5-1. Modify YOUR public_html/index.html file: CHANGE the line
+./www.eecs.wsu.edu/~cs360/ASS5.html:< FORM METHOD="POST" ACTION="http://cs360.eecs.wsu.edu/~kcw/cgi-bin/mycgi" >  TO
+./www.eecs.wsu.edu/~cs360/ASS5.html:< FORM METHOD="POST" ACTION="http://cs360.eecs.wsu.edu/~YOURNAME/cgi-bin/mycgi" >
+./www.eecs.wsu.edu/~cs360/ASS5.html:5-2. Go to YOUR cgi-bin/ directory. Change the line in mycgi.c file
+./www.eecs.wsu.edu/~cs360/ASS5.html: printf("&lt;FORM METHOD=\"POST\" ACTION=\"http://cs360.eecs.wsu.edu/~kcw/cgi-bin/mycgi\">"); TO
+./www.eecs.wsu.edu/~cs360/ASS5.html: printf("&lt;FORM METHOD=\"POST\" ACTION=\"http://cs360.eecs.wsu.edu/~YOURNAME/cgi-bin/mycgi\">");
+./www.eecs.wsu.edu/~cs360/ASS5.html:Then run   cc -o mycgi mycgi.c util.o   # generate YOUR OWN mycgi executable.
+./www.eecs.wsu.edu/~cs360/ASS5.html:   It should execute YOUR mycgi program in YOUR cgi-bin/ directory.
+./www.eecs.wsu.edu/~cs360/ass1.html:--------------------------------------------------------------------------------------------
+./www.eecs.wsu.edu/~cs360/ass1.html:-------------------------------------------------------------------------------------------
+./www.eecs.wsu.edu/~cs360/ass1.html:------------------------------------------------------------------------------
+./www.eecs.wsu.edu/~cs360/ass1.html:--------------------------------------------------------------------------
+./www.eecs.wsu.edu/~cs360/ass1.html:-----------------------------------------------------------------------------
+./www.eecs.wsu.edu/~cs360/ass1.html:           |header| Code | Data |<-BSS->|
+./www.eecs.wsu.edu/~cs360/ass1.html:(A). For each case, use cc -m32 t#.c to generate a.out. Then use ls -l a.out to
+./www.eecs.wsu.edu/~cs360/ass1.html:        --------------------------------------------
+./www.eecs.wsu.edu/~cs360/ass1.html:        --------------------------------------------  
+./www.eecs.wsu.edu/~cs360/ass1.html:        --------------------------------------------
+./www.eecs.wsu.edu/~cs360/ass1.html:        --------------------------------------------
+./www.eecs.wsu.edu/~cs360/ass1.html:        --------------------------------------------
+./www.eecs.wsu.edu/~cs360/ass1.html:        --------------------------------------------        
+./www.eecs.wsu.edu/~cs360/ass1.html:        --------------------------------------------
+./www.eecs.wsu.edu/~cs360/ass1.html:          globals ---|--- UNINITIALIZED  globals;
+./www.eecs.wsu.edu/~cs360/ass1.html:                     |---   INITIALIZED  globals;
+./www.eecs.wsu.edu/~cs360/ass1.html:          locals  ---|--- AUTOMATIC locals;
+./www.eecs.wsu.edu/~cs360/ass1.html:                     |--- STATIC    locals;
+./www.eecs.wsu.edu/~cs360/ass1.html:  (B). For each case, use   cc -static t.c   to generate a.out.
+./www.eecs.wsu.edu/~cs360/fileops.html:----------------------------------------------------------------------
+./www.eecs.wsu.edu/~cs360/fileops.html:                 mount -o loop mydisk /mnt
+./www.eecs.wsu.edu/~cs360/fileops.html:-----------------------------------------------------------------------
+./www.eecs.wsu.edu/~cs360/fileops.html:User mode with the desired results (or returns -1 if error).
+./www.eecs.wsu.edu/~cs360/fileops.html:     as well as for run-time efficiency. The library I/O functions include:
+./www.eecs.wsu.edu/~cs360/fileops.html:     manually, which is often tedious and time-consuming.
+./www.eecs.wsu.edu/~cs360/LAB4sp15.html:<H2>360 LAB Pre-Work #4</H2>
+./www.eecs.wsu.edu/~cs360/LAB4sp15.html:------------------------------------------------------------------------
+./www.eecs.wsu.edu/~cs360/LAB4sp15.html:-------------------------------------------------------------------------
+./www.eecs.wsu.edu/~cs360/LAB4sp15.html:  // A FEW MORE non-essential fields
+./www.eecs.wsu.edu/~cs360/LAB4sp15.html:  printf("s_magic = %x\n", sp->s_magic);
+./www.eecs.wsu.edu/~cs360/LAB4sp15.html:  if (sp->s_magic != 0xEF53){
+./www.eecs.wsu.edu/~cs360/LAB4sp15.html:  printf("s_inodes_count = %d\n", sp->s_inodes_count);
+./www.eecs.wsu.edu/~cs360/LAB4sp15.html:  printf("s_blocks_count = %d\n", sp->s_blocks_count);
+./www.eecs.wsu.edu/~cs360/LAB4sp15.html:  printf("s_free_inodes_count = %d\n", sp->s_free_inodes_count);
+./www.eecs.wsu.edu/~cs360/LAB4sp15.html:  printf("s_free_blocks_count = %d\n", sp->s_free_blocks_count);
+./www.eecs.wsu.edu/~cs360/LAB4sp15.html:  printf("s_first_data_blcok = %d\n", sp->s_first_data_block);
+./www.eecs.wsu.edu/~cs360/LAB4sp15.html:  printf("s_log_block_size = %d\n", sp->s_log_block_size);
+./www.eecs.wsu.edu/~cs360/LAB4sp15.html:  printf("s_log_frag_size = %d\n", sp->s_log_frag_size);
+./www.eecs.wsu.edu/~cs360/LAB4sp15.html:  printf("s_blocks_per_group = %d\n", sp->s_blocks_per_group);
+./www.eecs.wsu.edu/~cs360/LAB4sp15.html:  printf("s_frags_per_group = %d\n", sp->s_frags_per_group);
+./www.eecs.wsu.edu/~cs360/LAB4sp15.html:  printf("s_inodes_per_group = %d\n", sp->s_inodes_per_group);
+./www.eecs.wsu.edu/~cs360/LAB4sp15.html:  printf("s_mnt_count = %d\n", sp->s_mnt_count);
+./www.eecs.wsu.edu/~cs360/LAB4sp15.html:  printf("s_max_mnt_count = %d\n", sp->s_max_mnt_count);
+./www.eecs.wsu.edu/~cs360/LAB4sp15.html:  printf("s_magic = %x\n", sp->s_magic);
+./www.eecs.wsu.edu/~cs360/LAB4sp15.html:  printf("s_mtime = %s", ctime(&sp->s_mtime));
+./www.eecs.wsu.edu/~cs360/LAB4sp15.html:  printf("s_wtime = %s", ctime(&sp->s_wtime));
+./www.eecs.wsu.edu/~cs360/LAB4sp15.html:  ninodes = sp->s_inodes_count;
+./www.eecs.wsu.edu/~cs360/LAB4sp15.html:  imap = gp->bg_inode_bitmap;
+./www.eecs.wsu.edu/~cs360/LAB4sp15.html:	 gp->bg_block_bitmap,
+./www.eecs.wsu.edu/~cs360/LAB4sp15.html:	 gp->bg_inode_bitmap,
+./www.eecs.wsu.edu/~cs360/LAB4sp15.html:	 gp->bg_inode_table,
+./www.eecs.wsu.edu/~cs360/LAB4sp15.html:	 gp->bg_free_blocks_count,
+./www.eecs.wsu.edu/~cs360/LAB4sp15.html:	 gp->bg_free_inodes_count,
+./www.eecs.wsu.edu/~cs360/LAB4sp15.html:	 gp->bg_used_dirs_count);
+./www.eecs.wsu.edu/~cs360/LAB4sp15.html:  iblock = gp->bg_inode_table;   // get inode start block#
+./www.eecs.wsu.edu/~cs360/LAB4sp15.html:  printf("mode=%4x ", ip->i_mode);
+./www.eecs.wsu.edu/~cs360/LAB4sp15.html:  printf("uid=%d  gid=%d\n", ip->i_uid, ip->i_gid);
+./www.eecs.wsu.edu/~cs360/LAB4sp15.html:  printf("size=%d\n", ip->i_size);
+./www.eecs.wsu.edu/~cs360/LAB4sp15.html:  printf("time=%s", ctime(&ip->i_ctime));
+./www.eecs.wsu.edu/~cs360/LAB4sp15.html:  printf("link=%d\n", ip->i_links_count);
+./www.eecs.wsu.edu/~cs360/LAB4sp15.html:  printf("i_block[0]=%d\n", ip->i_block[0]);
+./www.eecs.wsu.edu/~cs360/LAB4sp15.html:Use dp-> to access the fields of the record, e.g. print its name
+./www.eecs.wsu.edu/~cs360/LAB4sp15.html:        cp += dp->rec_len;       // advance cp by rec_len BYTEs
+./www.eecs.wsu.edu/~cs360/LAB4sp15.html:        dp = (shut-up)cp;        // pull dp along to the next record
+./www.eecs.wsu.edu/~cs360/LAB4sp15.html:  sp->s_free_inodes_count--;
+./www.eecs.wsu.edu/~cs360/LAB4sp15.html:  gp->bg_free_inodes_count--;
+./www.eecs.wsu.edu/~cs360/LAB4sp15.html:  ninodes = sp->s_inodes_count;
+./www.eecs.wsu.edu/~cs360/LAB4sp15.html:  nblocks = sp->s_blocks_count;
+./www.eecs.wsu.edu/~cs360/LAB4sp15.html:  nfreeInodes = sp->s_free_inodes_count;
+./www.eecs.wsu.edu/~cs360/LAB4sp15.html:  nfreeBlocks = sp->s_free_blocks_count;
+./www.eecs.wsu.edu/~cs360/LAB4sp15.html:  imap = gp->bg_inode_bitmap;
+./www.eecs.wsu.edu/~cs360/libio.html:-------------------------------------|----------------------------------------
+./www.eecs.wsu.edu/~cs360/libio.html:----------------------------------------------------------------------------
+./www.eecs.wsu.edu/~cs360/libio.html:  -----------------------------------|----------------------------------------
+./www.eecs.wsu.edu/~cs360/libio.html: ----------------------------------------------------------------------------
+./www.eecs.wsu.edu/~cs360/libio.html:         the file as 1-byte objects. This will read all the remaining bytes 
+./www.eecs.wsu.edu/~cs360/libio.html:3-1. The algorithm of fread() is as follows:
+./www.eecs.wsu.edu/~cs360/libio.html:3-2 fwrite():
+./www.eecs.wsu.edu/~cs360/libio.html:3-3. USE syscalls OR Library Functions?
+./www.eecs.wsu.edu/~cs360/libio.html:3-4. Algorithm of fclose():
+./www.eecs.wsu.edu/~cs360/libio.html:3-5. Other Modes for fopen():
+./www.eecs.wsu.edu/~cs360/libio.html:     The difference stems from the non-uniform treatment of R/W pointers in the
+./www.eecs.wsu.edu/~cs360/libio.html:4-1. Line mode I/O:
+./www.eecs.wsu.edu/~cs360/libio.html:4-2. Char Mode I/O:
+./www.eecs.wsu.edu/~cs360/libio.html:4-3. FORMATTED I/O:
+./www.eecs.wsu.edu/~cs360/libio.html:4-4. Other Functions:
+./www.eecs.wsu.edu/~cs360/notes1.html:    -------------- Under Linux: --------------------
+./www.eecs.wsu.edu/~cs360/notes1.html:    ------------------------------------------------
+./www.eecs.wsu.edu/~cs360/notes1.html:   MTX is a Unix-like OS designed and written entirely by KCW. MTX can run on 
+./www.eecs.wsu.edu/~cs360/notes1.html:      ------------------------------------------
+./www.eecs.wsu.edu/~cs360/notes1.html:      mount -o loop MTXinstallCD.iso /mnt
+./www.eecs.wsu.edu/~cs360/notes1.html:      cp /mnt/qemu-0.9.1-i386.tar.gz /
+./www.eecs.wsu.edu/~cs360/notes1.html:      zcat qemu-0.9.1-i386.tar.gz | tar xvf -
+./www.eecs.wsu.edu/~cs360/notes1.html:      ------------------------------------------
+./www.eecs.wsu.edu/~cs360/notes1.html:      qemu -hda vdisk -smp 8 -m 512m -serial mon:stdio
+./www.eecs.wsu.edu/~cs360/notes1.html:          1 (rmtx): MTX in 16-bit real mode
+./www.eecs.wsu.edu/~cs360/notes1.html:          2 (pmtx): MTX in 32-bit protected mode
+./www.eecs.wsu.edu/~cs360/notes1.html:          3 (smp) : SMP MTX in 32-bit protected mode
+./www.eecs.wsu.edu/~cs360/notes1.html:          4 (mtx32.1): MTX in 32-bit mode using segmentation
+./www.eecs.wsu.edu/~cs360/notes1.html:            |--> bin 
+./www.eecs.wsu.edu/~cs360/notes1.html:            |--> dev
+./www.eecs.wsu.edu/~cs360/notes1.html:            |--> etc
+./www.eecs.wsu.edu/~cs360/notes1.html:     / ---> |--> lib
+./www.eecs.wsu.edu/~cs360/notes1.html:            |--> sbin
+./www.eecs.wsu.edu/~cs360/notes1.html:            |              |--> bin
+./www.eecs.wsu.edu/~cs360/notes1.html:            |--> tmp       |--> include --> .h files 
+./www.eecs.wsu.edu/~cs360/notes1.html:            |              |--> lib
+./www.eecs.wsu.edu/~cs360/notes1.html:            |--> usr ----->|--> local
+./www.eecs.wsu.edu/~cs360/notes1.html:            |              |--> man
+./www.eecs.wsu.edu/~cs360/notes1.html:            |--> user      |--> X11 ------>
+./www.eecs.wsu.edu/~cs360/notes1.html:            |--> vmunix 
+./www.eecs.wsu.edu/~cs360/notes1.html:        and (non-directory) files.
+./www.eecs.wsu.edu/~cs360/notes1.html:   (2). Non-directory files : 
+./www.eecs.wsu.edu/~cs360/notes1.html:        Non-directory files are either REGULAR or SPECIAL files (SEE BELOW).
+./www.eecs.wsu.edu/~cs360/notes1.html:        Note that Non-directory files can only appear as leaf-nodes in the 
+./www.eecs.wsu.edu/~cs360/notes1.html:                 ln   -s   aVeryLongFileName   myLink
+./www.eecs.wsu.edu/~cs360/notes1.html:        sets up  myLink  as a soft-link to  aVeryLongFileName.  Access to 
+./www.eecs.wsu.edu/~cs360/notes1.html:        myLink will be re-directed to the actual file aVeryLongFileName.
+./www.eecs.wsu.edu/~cs360/notes1.html:          /usr/man     : on-line manual directory.
+./www.eecs.wsu.edu/~cs360/notes1.html:          /usr/X11     : X-Window system.
+./www.eecs.wsu.edu/~cs360/notes1.html:     Each user is assigned an account by the system administrator. In a stand-
+./www.eecs.wsu.edu/~cs360/notes1.html:     ----- ----------------- --- ------------------- ----------- --------------
+./www.eecs.wsu.edu/~cs360/notes1.html:                --   ----   ----- ----- 
+./www.eecs.wsu.edu/~cs360/notes1.html:     the child processes to terminate.  This is called MULTI-TASKING.
+./www.eecs.wsu.edu/~cs360/notes1.html:(1). The   ls -l   command lists the contents of a directory:
+./www.eecs.wsu.edu/~cs360/notes1.html:drwxr-xr-x   root   bin     2048  Dec 23 09:22 bin/
+./www.eecs.wsu.edu/~cs360/notes1.html:lrwxrwxrwx   root   root      23  Dec 20 20:15 kwang -> /home/kwang/public_html
+./www.eecs.wsu.edu/~cs360/notes1.html:-rw-r--r--   root   root  433387  Dec  8 21:52 vmlinuz
+./www.eecs.wsu.edu/~cs360/notes1.html:-rwxr-xr-x   kwang  kwang  21400  Jan 10 07{30 a.out
+./www.eecs.wsu.edu/~cs360/LAB1.sp15.html:                       DUE: 1-30-2015
+./www.eecs.wsu.edu/~cs360/LAB1.sp15.html:                            |-> "....%c ..%s ..%d .. %x ....\n"       
+./www.eecs.wsu.edu/~cs360/LAB1.sp15.html:   ---------------------- --|------------------------------------------
+./www.eecs.wsu.edu/~cs360/LAB1.sp15.html:   -------------------------------------|------------------------------
+./www.eecs.wsu.edu/~cs360/LAB1.sp15.html:#--------------------- s.s file --------------------------
+./www.eecs.wsu.edu/~cs360/LAB1.sp15.html:#---------- DATA section of assembly code ---------------
+./www.eecs.wsu.edu/~cs360/LAB1.sp15.html:#---------  end of s.s file ----------------------------
+./www.eecs.wsu.edu/~cs360/LAB1.sp15.html:  myprintf("---------- testing YOUR myprintf() ---------\n");
+./www.eecs.wsu.edu/~cs360/LAB1.sp15.html:           "testing string", -1024, 1024, 1024, 1024);
+./www.eecs.wsu.edu/~cs360/LAB1.sp15.html:6. Run    gcc -m32 t.c s.s             to generate a.out
+./www.eecs.wsu.edu/~cs360/ASS4.html:  --------------------------------------------------------------------
+./www.eecs.wsu.edu/~cs360/ASS4.html: -----------------------------------------------------------------------------
+./www.eecs.wsu.edu/~cs360/ASS4.html:     printf("this is child proc %d, input a value (0-255) to die: ", getpid());
+./www.eecs.wsu.edu/~cs360/ASS4.html:  2. Write code to           |-------- n=5--------| 
+./www.eecs.wsu.edu/~cs360/ASS4.html:           token[0], token[1],....,token[n-1]
+./www.eecs.wsu.edu/~cs360/ASS4.html:     -------------------- QUESTION: ------------------------------
+./www.eecs.wsu.edu/~cs360/ASS4.html:      printf("---------------------------------------\n");
+./www.eecs.wsu.edu/robots.txt:User-agent: *
+./www.eecs.wsu.edu/robots.txt:Crawl-delay: 10
+./PROTOTYPES.txt:MINODE *iget(int dev, int ino)       // return mip->INODE of (dev,ino) 
+./PROTOTYPES.txt:int iput(MINODE *mip)                // dispose of mip->INODE
+./PROTOTYPES.txt:int search(MINODE *mip, char *name)  // search for name in DIR mip->INODE
+./PROTOTYPES.txt:int truncate(MINODE *mip) // truncate mip->INODE's data blocks
+./main.c:  return(-1);
+./main.c:  line[strlen(line)-1] = 0;
+./main.c:  if (sp->s_magic != SUPER_MAGIC){
+./main.c:             sp->s_magic, rootdev);
+./main.c:  ninodes = mp->ninodes = sp->s_inodes_count;
+./main.c:  nblocks = mp->nblocks = sp->s_blocks_count;
+./main.c:  bfree = sp->s_free_blocks_count;
+./main.c:  ifree = sp->s_free_inodes_count;
+./main.c:  mp->dev = dev;         
+./main.c:  mp->busy = BUSY;
+./main.c:  strcpy(mp->name, rootdev);
+./main.c:  strcpy(mp->mount_name, "/");
+./main.c:  iblock = gp->bg_inode_table;
+./main.c:  printf("bmap=%d\n", gp->bg_block_bitmap);
+./main.c:  printf("imap=%d\n", gp->bg_inode_bitmap);
+./main.c:  mp->mounted_inode = root;
+./main.c:  root->mountptr = mp;
+./main.c:  p->status = BUSY;
+./main.c:  p->uid = 0; 
+./main.c:  p->pid = p->ppid = p->gid = 0;
+./main.c:  p->parent = p->sibling = p;
+./main.c:  p->child = 0;
+./main.c:  p->cwd = root;
+./main.c:  cwd = running->cwd;
+./main.c:  p->next = &proc[0];
+./main.c:  p->status = BUSY;
+./main.c:  p->uid = 2; 
+./main.c:  p->pid = 1;
+./main.c:  p->ppid = p->gid = 0;
+./main.c:  p->cwd = root;
+./main.c:  p->cwd->refCount++;
+./main.c:   if (running->uid != 0){
+./main.c:       return(-1);
+./main.c:   for (i=NMOUNT-1; i>=0; i--){
+./main.c:  // write in-core INODEs to disk
+./main.c:  printf("flush in-core inodes to disk .....\n");
+./main.c:    if (mip->refCount > 0){
+./main.c:                           i, mip->dev, mip->ino, mip->name); 
+./main.c:       save = mip->refCount;
+./main.c:       mip->refCount = 1;
+./main.c:       mip->refCount = save;
+./main.c:    if (strcmp(argv[1], "-d")==0)
+./main.c:      printf("P%d running: ", running->pid);
+./main.c:      if (running->status == KILLED)
+./main.c:      line[strlen(line)-1] = 0;
+Binary file ./proj.tar.gz matches

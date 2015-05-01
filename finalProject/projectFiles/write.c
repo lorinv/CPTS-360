@@ -1,12 +1,16 @@
-#include "util.h"
+//#include "util.h"
 #include <stdio.h>
+
+extern int extFD;
 
 int write_file()
 {
 	//Temp variables
 	//TODO
-	int fd = 0;
-	char str[] = "Write this string!";
+	int fd = extFD;
+	char newStr[256];
+	printf("Enter string to write to file: ");
+	fgets(newStr, 256, stdin);
 
 	//Check if open and if eith WR or RW or APPEND
 	if ((running->fd[fd] && running->fd[fd]->refCount) &&
@@ -15,7 +19,7 @@ int write_file()
 	{
 		//copy text string into a buf[] and get its length as nbytes
 		//TODO
-		return(mywrite(fd, buf, nbytes));	
+		return(mywrite(fd, newStr, strlen(newStr)));	
 	}
 	else
 	{
@@ -24,12 +28,41 @@ int write_file()
 	}
 }
 
+int balloc (int dev)
+{
+    int i;
+    char buf[BLOCK_SIZE];
+    int nblocks; //FIXME needs to replaced from MOUNT struct bnodes
+
+    get_block(dev, SUPERBLOCK, buf);
+    sp = (SUPER*)buf;
+    nblocks = sp->s_blocks_count;
+
+    get_block(dev, BBITMAP, buf);
+    for (i = 0; i < nblocks; i++)
+    {
+        if (buf[i/8] & (1 << (i%8)) == 0)
+        {
+			buf[i/8] |= (1 << (i%8));
+            put_block(dev, BBITMAP, buf);
+
+            decFreeBlocks(dev);
+            return (i + 1);
+        }
+    }
+    return 0;
+}
+
 int mywrite(int fd, char buf[], int nbytes)
 {
-	int lbk, startByte;
+	int lbk, startByte, blk, offset;
 	OFT* oftp;
 	char wbuf[BLKSIZE];
 	int remain;
+	MINODE *mip;
+	char *cq = buf;
+
+	mip = running->cwd;
 
 	oftp = running->fd[fd];
 	while (nbytes > 0)
@@ -40,7 +73,7 @@ int mywrite(int fd, char buf[], int nbytes)
 
 		if (lbk < 12)
 		{
-			if (ip->INODE.i_block[lbk] == 0)
+			if (mip->INODE.i_block[lbk] == 0)
 			{
 				//Must allocate a block
 				mip->INODE.i_block[lbk] = balloc(mip->dev);

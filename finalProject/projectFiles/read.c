@@ -3,16 +3,17 @@
 int read_file()
 {
 
-	//temp fd and nbytes
-	int fd = 0;
-	int nbytes = 0;
+	int fd, nbytes;
+	//TODO: What does it mean to ask for fd?
 	
 	char buf[nbytes + 1];
 
+	//check is file is open, is being referenced, and 
+	//Is either in read or readwrite mode
 	if ((!running->fd[fd] && running->fd[fd]->refCount == 0) ||
 		(running->fd[fd]->mode != 0 && running->fd[fd]->mode != 2))
 	{
-		prinf("Not opened for RD or RW.\n");	
+		printf("Not opened for RD or RW.\n");	
 		return -1;
 	}
 	else
@@ -23,19 +24,30 @@ int read_file()
 
 }
 
+//reads from a file descriptor
+//Reads up to nbytes from fd into buf
 int myread(int fd, char *buf, int nbytes)
 {
 	int count = 0;
-	char *cq, buf[BLKSIZE], buf2[BLKSIZE];
+	char *cq, buf2[BLKSIZE];
+	OFT* oftp; 
 	oftp = running->fd[fd];
 	int lbk, blk, startByte, remain;
-	char readbud[BLKSIZE];
+	int ino;
+	char readbuf[BLKSIZE];
+	MINODE *mip;
 
+	//Need to get the MINODE
+	mip = oftp->inodeptr;
+
+	//Number of bytes still available in the file
 	int avil = mip->INODE.i_size - oftp->offset;
 	cq = buf;
 
 	while (nbytes && avil)
 	{
+		//Compute logical block # (lbk) and startByte
+		//startByte in that block from offset
 		lbk = oftp->offset / BLKSIZE;
 		startByte = oftp->offset % BLKSIZE;
 

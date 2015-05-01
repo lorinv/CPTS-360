@@ -2,11 +2,12 @@
 This file will open and close a file given a file name or descriptor.
 */
 #include <stdio.h>
-#include "util.h"
+//.#include "util.h"
 
 //External Variables
 extern PROC* running;
 extern MINODE *root;
+extern int extFD;
 
 int token_path (char *pathname, char **token_ptrs)
 {
@@ -20,13 +21,14 @@ int token_path (char *pathname, char **token_ptrs)
 	return tok_i;
 }
 
-int close_file(int fd)
+int close_file()
 {
+	int fd = extFD;
 	OFT* oftp;
 	MINODE *mip;
 
 	//Verify fd is within range
-	if (fd > NFD)
+	if (fd > NFD || fd == -1)
 		return -1;
 	//verify running->fd[fd] is pointing at a OFT entry
 	if (running->fd[fd] == 0) return;
@@ -43,27 +45,23 @@ int close_file(int fd)
 	return 0;
 }
 
+
+//What is this supposed to do when you cal
 int open_file()
 {
 	char buf[1024];
 	int *dev;
 	int i, ino, numMode;
-	char path[128], mode[6];
 	char c;
 	MINODE *mip;
 	OFT* oftp;
+	char path[128], mode[6];
+
+	printf("Enter pathname: ");
+	fgets(path, 128, stdin);
+	path[strlen(path) - 1] = 0;
 
 	//Ask for the pathname and mode to open
-	printf("Input pathname: ");
-
-	//Get user input
-	fgets(path, 128, stdin);
-	c = path[0];
-
-	//Tokenize input
-	char tokens[10][100];
-	int numTok = token_path(path, tokens);	
-
 	printf("Input mode to open (0|1|2|3 for RD|WR|RW|APPEND):");
 	fgets(mode, 6, stdin); 
 	numMode = atoi(mode);
@@ -82,38 +80,42 @@ int open_file()
 		dev = running->cwd->dev;
 	}
 
-	//printf("Tokens : %s\n", tokens[0][0]);
+	//token_path(path, tokens);
+	//printf("Tokens : %s\n" tokens[0][0]);
+	
 
-	ino = getino(&dev, "file1");	//tokens[0]);
+	ino = getino(&dev, path);	//tokens[0]);
 	//REMOVE
 	printf("ino = %d\n", ino);
 	mip = iget(dev, ino);
 	
 	printf("Permissions in INODE: %d\n", mip->INODE.i_mode); 
 
-	//Use the i_mode to verify it's a REGULAR file
-	if((mip->INODE.i_mode & 0100000) != 0100000)
+	//Use the i_mode to verify it's a REGULAR file	
+	if(S_ISDIR(mip->INODE.i_mode))
 	{
 		printf("Invalid file type\n");
 		iput(mip);
 		return;
-	}	
+	}
+		
 
-	
+		
 	//Check permissions
 		//User selects Read and user can read
 	if ((numMode == 0 && !((mip->INODE).i_mode & 0x0100)) ||
 		//User selects Write and file can be writen to
-		(numMode == 1 && !((mip->INODE).i_mode & 0x0080)) ||
+		(numMode == 1 && !((mip->INODE).i_mode & 0x0200)) ||
 		//User selects RW and is available
-		(numMode == 2 && !((mip->INODE).i_mode & 0x0180) == 0x0180) ||
+		(numMode == 2 && !((mip->INODE).i_mode & 0x0600)) ||
 		//User selects APPEND
-		(numMode == 3 && !((mip->INODE).i_mode & 0x0100)))
+		(numMode == 3 && !((mip->INODE).i_mode & 0x0600)))
 	{
 		printf("Wrong permissions set.\n");
 		iput(mip);
 		return;
 	}
+	
 
 	//Check if file already opened with INCOMPATABLE mode
 	//(Only multiple reads are okay, nothing else.)
@@ -209,6 +211,5 @@ int open_file()
 	}
 
 	//Return i as the file descriptor
-	//printf("MADE IT!\n");
+	extFD = i;
 }
-
