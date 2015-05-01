@@ -42,15 +42,19 @@ int mount()
 		for (i = 0; i < NMOUNT; i++)
 		{
 			if (mounttab[i].dev == 0)
-			{
-				mounttab[i].dev = dev;
-				*mntptr = mounttab[i];
+			{	
+				//mounttab[i].dev = dev;
+				mntptr = &(mounttab[i]);
 			}	
 		}
-
 		//open FS for RW, fd = new dev
 		//Check if EXT file system, if not, reject
 		fd = open(pathname, O_RDWR);
+		if (fd == -1)
+		{
+			printf("Invalid file descriptor.\n");
+			return -1;
+		}
 		dev = fd;
 		
 		get_block(fd, 1, buf);
@@ -90,20 +94,46 @@ int mount()
 		return 0;		
 }
 
-int unmount (char *filesys)
+int umount (char *filesys)
 {
-	int i;
+	MOUNT* umnt = 0;
+
+	if (strcmp(filesys, "") == 0)
+	{
+		printf("Please enter a FS to unmount\n");
+		return -1;
+	}
+
+	int i, j, count = 0;;
 	for (i = 0; i < NMOUNT; i++)
 	{
 		if(strcmp(mounttab[i].name, filesys) == 0)
 		{
+			count++;
 			break;
-			//Else return crap - if not found
 		}
+	}
+	if (count == 0)
+	{
+		printf("%s is not mounted.\n", filesys);
+		return -1;
 	}
 
 	//compare the cwd->dev to the MINODE->devs
 	//If none match, no one is using it
+	for (j = 0; j < NMINODES; j++)
+	{
+		if (minode[i].refCount && minode[i].mounted && 
+			(minode[i].mountptr->dev == umnt->dev))
+		{
+			close(umnt->dev);
+			minode[i].mountptr = 0;
+			iput(&minode[i]);
+			umnt->mounted_inode = 0;
+			umnt->dev = 0;
+			break;			
+		}
+	}
 	
 	//Get the inode using iget and the name passd
 	//compare running->cwd to INODE mounttable

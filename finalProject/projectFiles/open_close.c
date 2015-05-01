@@ -1,26 +1,17 @@
 /*
+Lorin Vandegrift
+11354621
 This file will open and close a file given a file name or descriptor.
 */
+
 #include <stdio.h>
-//.#include "util.h"
 
 //External Variables
 extern PROC* running;
 extern MINODE *root;
 extern int extFD;
 
-int token_path (char *pathname, char **token_ptrs)
-{
-	int tok_i;
-	token_ptrs[0] = strtok(pathname, "/\n");
-	
-	for (tok_i = 0; token_ptrs[tok_i]; tok_i++)
-	{
-		token_ptrs[tok_i + 1] = strtok(NULL, "/\n");
-	}
-	return tok_i;
-}
-
+//Closes the current open file
 int close_file()
 {
 	int fd = extFD;
@@ -145,7 +136,6 @@ int open_file()
 	//Allocate a FREE OpenFileTable (OFT) and fill values
 	//Keeps track of the connections to the file
 	//Each connection has a connection status such as read/write
-	//TODO
 	if (oftp && oftp->mode == numMode)
 	{
 		oftp->refCount++;

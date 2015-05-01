@@ -2,9 +2,16 @@
 
 int read_file()
 {
-
 	int fd, nbytes;
-	//TODO: What does it mean to ask for fd?
+	
+	if (strcmp(pathname,"") == 0 || strcmp(parameter,"") == 0)
+	{
+		printf("Please enter both a file descriptor and the number of bytes.\n");
+		return -1;
+	}
+
+	fd = atoi(pathname);
+	nbytes = atoi(parameter);
 	
 	char buf[nbytes + 1];
 
@@ -18,7 +25,6 @@ int read_file()
 	}
 	else
 	{
-		//Do I need dynamic memory here?
 		return (myread(fd, buf, nbytes));
 	}
 

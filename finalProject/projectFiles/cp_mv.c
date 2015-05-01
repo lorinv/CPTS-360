@@ -13,18 +13,9 @@ int cp_file()
 		return 0;
 	}
 	
-	//open src fpr read
-	//O_RDONLY = 0
-	fd = running->fd[open_file(pathname, 0)];
-	dev = running->cwd->ino;
-	ino = getino(dev, pathname);
-	mip1 = iget(dev, ino);	
+	fd = open(pathname, O_RDONLY);
 
-	fd = running->fd[open_file(parameter, 0)];
-	ino = getino(dev, parameter);
-	mip2 = iget(dev, ino);
-	
-	int *tempptr;
+	gd = open(parameter, O_RDONLY);
 		
 	if (fd == -1)
 	{

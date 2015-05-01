@@ -6,9 +6,8 @@
 #include "projectFiles/read.c"
 #include "projectFiles/write.c"
 #include "projectFiles/cp_mv.c"
-//#include "projectFiles/mount_unmount.c"
+#include "projectFiles/mount_unmount.c"
 #include "projectFiles/cat.c"
-//#include "projectFiles/util.h"
 
 FILE *fp;
 int extFD;
@@ -248,7 +247,7 @@ int main(int argc, char *argv[ ])
            case 2 : pwd(cwd);                 break;
            case 3 : list_dir();               break;
            case 4 : mount();                  break;
-  //         case 5 : umount(pathname);         break;
+           case 5 : umount(pathname);         break;
            case 6 : creat_file();             break;
            case 7 : rmdir();                  break;
            case 8 : rm_file();                break;

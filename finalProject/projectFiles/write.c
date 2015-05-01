@@ -55,12 +55,15 @@ int balloc (int dev)
 
 int mywrite(int fd, char buf[], int nbytes)
 {
+	//int i, j;
 	int lbk, startByte, blk, offset;
 	OFT* oftp;
 	char wbuf[BLKSIZE];
 	int remain;
 	MINODE *mip;
 	char *cq = buf;
+	//int ibuf[BLKSIZE / 4]; //For indirect blocks
+	//int dibuf[BLKSIZE / 4]; //For direct blocks
 
 	//Get the INODE of the current file you're working with
 	//Open file table
@@ -87,14 +90,51 @@ int mywrite(int fd, char buf[], int nbytes)
 				// 
 			}
 			blk = mip->INODE.i_block[lbk];
+			printf("mip=>dev: %d\n", mip->dev);
 		}
 		else if (lbk >= 12 && lbk < 256 + 12)
 		{
+			/*
 			//Indirect blocks
+			get_block(mip->dev, mip->INODE.i_block[12], (char *) ibuf);
+			
+			for(i = 0; i < 256; i++)
+			{
+				if(ibuf[i] == 0)
+				{
+					ibuf[i] = balloc(mip->dev);
+					blk = ibuf[i];
+					put_block(mip->dev, mip->INODE.i_block[12], (char *) ibuf);
+					break;
+				}
+			}
+			*/
 		}
 		else
 		{
 			//Double indirect blocks
+			/*
+			blk = -1;
+			get_block(mip->dev, mip->INODE.i_block[13], (char *) ibuf);
+			
+			for (i = 0; i < 256; i++)
+			{
+				if (ibuf[i])
+				{
+					get_block(mip->dev, ibuf, (char *)dibuf);
+					for (j = 0; j < 256; j++)
+					{
+						if (dibuf[j] == 0)
+						{
+							dibuf[j] = balloc(mip->dev);
+							blk = dibuf[j];
+							put_block(mip->dev, ibuf[i], (char *)dibuf);
+							break;
+						}
+					}
+				}
+			}
+			*/
 		}
 
 		get_block(mip->dev, blk, wbuf);		
