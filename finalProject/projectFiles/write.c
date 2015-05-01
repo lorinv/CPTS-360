@@ -9,8 +9,6 @@ int write_file()
 	//TODO
 	int fd = extFD;
 	char newStr[256];
-	printf("Enter string to write to file: ");
-	fgets(newStr, 256, stdin);
 
 	//Check if open and if eith WR or RW or APPEND
 	if ((running->fd[fd] && running->fd[fd]->refCount) &&
@@ -19,6 +17,8 @@ int write_file()
 	{
 		//copy text string into a buf[] and get its length as nbytes
 		//TODO
+		printf("Enter string to write to file: ");
+		fgets(newStr, 256, stdin);
 		return(mywrite(fd, newStr, strlen(newStr)));	
 	}
 	else
@@ -32,7 +32,7 @@ int balloc (int dev)
 {
     int i;
     char buf[BLOCK_SIZE];
-    int nblocks; //FIXME needs to replaced from MOUNT struct bnodes
+    int nblocks; 
 
     get_block(dev, SUPERBLOCK, buf);
     sp = (SUPER*)buf;
@@ -62,15 +62,20 @@ int mywrite(int fd, char buf[], int nbytes)
 	MINODE *mip;
 	char *cq = buf;
 
-	mip = running->cwd;
-
+	//Get the INODE of the current file you're working with
+	//Open file table
 	oftp = running->fd[fd];
+	mip = oftp->inodeptr;
+	printf("Writing to ino = %d\n", mip->ino);
+	int numBytes = nbytes;
 	while (nbytes > 0)
 	{
 		//Compute logical block (lbk) and the startByte
-		lbk = 	oftp->offset / BLKSIZE;
+		//Because we don't always want to start at the 
+		//beginning of the file
+		lbk = oftp->offset / BLKSIZE;
 		startByte = oftp->offset & BLKSIZE;
-
+		printf("lbk = %d\n", lbk);
 		if (lbk < 12)
 		{
 			if (mip->INODE.i_block[lbk] == 0)
@@ -111,6 +116,6 @@ int mywrite(int fd, char buf[], int nbytes)
 	}
 	
 	mip->dirty = 1; //mark mip dirty for iput()
-	printf("Write %d char into file descriptor fd=%d\n", nbytes, fd);
+	printf("Write %d char into file descriptor fd=%d\n", numBytes, fd);
 	return nbytes;
 }

@@ -46,17 +46,19 @@ int close_file()
 }
 
 
-//What is this supposed to do when you cal
+// Opens a file when the user inputs a filename and a mode
+// The file is then then saved to the OFT and the running
+// process
 int open_file()
 {
 	char buf[1024];
 	int *dev;
 	int i, ino, numMode;
-	char c;
 	MINODE *mip;
 	OFT* oftp;
 	char path[128], mode[6];
 
+	//Get the pathname from the user
 	printf("Enter pathname: ");
 	fgets(path, 128, stdin);
 	path[strlen(path) - 1] = 0;
@@ -71,7 +73,9 @@ int open_file()
 		return;
 	}
 
-	if (c == '/')
+	//Check if the pathname is relative or from root 
+	//Get the device, which refers the FS you are working with
+	if (path[0] == '/')
 	{
 		dev = root->dev;	
 	}
@@ -80,16 +84,13 @@ int open_file()
 		dev = running->cwd->dev;
 	}
 
-	//token_path(path, tokens);
-	//printf("Tokens : %s\n" tokens[0][0]);
-	
-
-	ino = getino(&dev, path);	//tokens[0]);
-	//REMOVE
+	//Gets and stores the ino and mip
+	ino = getino(&dev, path);
 	printf("ino = %d\n", ino);
 	mip = iget(dev, ino);
 	
-	printf("Permissions in INODE: %d\n", mip->INODE.i_mode); 
+	
+	printf("Permissions in INODE: %o\n", mip->INODE.i_mode); 
 
 	//Use the i_mode to verify it's a REGULAR file	
 	if(S_ISDIR(mip->INODE.i_mode))
@@ -98,18 +99,16 @@ int open_file()
 		iput(mip);
 		return;
 	}
-		
-
-		
+				
 	//Check permissions
-		//User selects Read and user can read
-	if ((numMode == 0 && !((mip->INODE).i_mode & 0x0100)) ||
+	//User selects Read and user can read
+	if ((numMode == 0 && !((mip->INODE).i_mode & 0b1100100100)) ||
 		//User selects Write and file can be writen to
-		(numMode == 1 && !((mip->INODE).i_mode & 0x0200)) ||
+		(numMode == 1 && !((mip->INODE).i_mode & 0b1010100100)) ||
 		//User selects RW and is available
-		(numMode == 2 && !((mip->INODE).i_mode & 0x0600)) ||
+		(numMode == 2 && !((mip->INODE).i_mode & 0b1110100100)) ||
 		//User selects APPEND
-		(numMode == 3 && !((mip->INODE).i_mode & 0x0600)))
+		(numMode == 3 && !((mip->INODE).i_mode & 0b1110100100)))
 	{
 		printf("Wrong permissions set.\n");
 		iput(mip);
@@ -153,7 +152,16 @@ int open_file()
 	}
 	else
 	{
-		oftp = falloc();
+		
+		for (i = 0; i < NOFT; i++)
+		{
+			if (oft[i].refCount == 0)
+			{
+				oftp = &(oft[i]);
+				break;
+			}
+		}
+
 		if (oftp == 0)
 		{
 			//If oft is full
@@ -212,4 +220,6 @@ int open_file()
 
 	//Return i as the file descriptor
 	extFD = i;
+	running->cwd = mip;
+	printf("%s was successfully opened.\n", path);
 }
