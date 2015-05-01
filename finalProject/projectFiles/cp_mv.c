@@ -13,9 +13,9 @@ int cp_file()
 		return 0;
 	}
 	
-	fd = open(pathname, O_RDONLY);
+	fd = open_file2(pathname, 0);
 
-	gd = open(parameter, O_RDONLY);
+	gd = open_file2(parameter, 2);
 		
 	if (fd == -1)
 	{
@@ -26,9 +26,9 @@ int cp_file()
 	//open dst for WR
 	//gd = open_file("tiny2", O_RDWR);	
 
-	while(n = read(fd, buf, BLKSIZE))
+	while(n = myread(fd, buf, BLKSIZE))
 	{
-		write(gd, buf, n);
+		mywrite(gd, buf, n);
 	}
 }
 

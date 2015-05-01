@@ -11,10 +11,15 @@ extern PROC* running;
 extern MINODE *root;
 extern int extFD;
 
-//Closes the current open file
 int close_file()
 {
 	int fd = extFD;
+	close_file2(fd);
+}
+
+//Closes the current open file
+int close_file2(int fd)
+{
 	OFT* oftp;
 	MINODE *mip;
 

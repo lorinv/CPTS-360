@@ -28,24 +28,29 @@ int write_file()
 	}
 }
 
+//Allocates a block
 int balloc (int dev)
 {
     int i;
     char buf[BLOCK_SIZE];
     int nblocks; 
 
+	// We need to get the number of blocks from the super block
     get_block(dev, SUPERBLOCK, buf);
     sp = (SUPER*)buf;
     nblocks = sp->s_blocks_count;
 
+	//Finds the next available block using the block
+	//bitmap 
     get_block(dev, BBITMAP, buf);
     for (i = 0; i < nblocks; i++)
     {
         if (buf[i/8] & (1 << (i%8)) == 0)
         {
 			buf[i/8] |= (1 << (i%8));
+			//Puts the block in the BBITMAP
             put_block(dev, BBITMAP, buf);
-
+			
             decFreeBlocks(dev);
             return (i + 1);
         }

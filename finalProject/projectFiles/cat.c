@@ -1,5 +1,5 @@
-#include "util.h"
-#include <stdio.h>
+//#include "util.h"
+//#include <stdio.h>
 
 int cat_file()
 {
@@ -7,7 +7,8 @@ int cat_file()
 	int n, fd;
 
 	printf("pathname %s\n", pathname);
-	fd = open(pathname, O_RDONLY);
+	//fd = open(pathname, O_RDONLY);
+	fd = open_file2(pathname, 0);
 	if (fd == -1)
 	{
 		printf("Invalid file descriptor.\n");
@@ -16,11 +17,13 @@ int cat_file()
 	printf("FD %d\n", fd);	
 
 	//fd = open filename for READ
-	while (n = read(fd, buf, 1023))
+	n = myread(fd, buf, 1020);
+	while (n != 0)
 	{
 		buf[n] = 0;
-		//TODO: Fix this if you have time
 		printf("%s", buf);
+		n = myread(fd, buf, 1020);
 	}
-	close(fd);
+	close_file2(fd);
+
 }	 

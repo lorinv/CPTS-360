@@ -37,19 +37,21 @@ int myread(int fd, char *buf, int nbytes)
 	int count = 0;
 	char *cq, buf2[BLKSIZE];
 	OFT* oftp; 
-	oftp = running->fd[fd];
 	int lbk, blk, startByte, remain;
 	int ino;
 	char readbuf[BLKSIZE];
 	MINODE *mip;
 
 	//Need to get the MINODE
+	oftp = running->fd[fd];
 	mip = oftp->inodeptr;
 
 	//Number of bytes still available in the file
 	int avil = mip->INODE.i_size - oftp->offset;
 	cq = buf;
 
+	//This loop basically goes through the file to be read
+	//and copies each block into the provided buffer
 	while (nbytes && avil)
 	{
 		//Compute logical block # (lbk) and startByte
