@@ -15,8 +15,17 @@ int cp_file()
 	
 	//open src fpr read
 	//O_RDONLY = 0
-	fd = open_file("tiny", O_RDONLY);
-			
+	fd = running->fd[open_file(pathname, 0)];
+	dev = running->cwd->ino;
+	ino = getino(dev, pathname);
+	mip1 = iget(dev, ino);	
+
+	fd = running->fd[open_file(parameter, 0)];
+	ino = getino(dev, parameter);
+	mip2 = iget(dev, ino);
+	
+	int *tempptr;
+		
 	if (fd == -1)
 	{
 		printf("Invalid File descriptor...");
@@ -24,7 +33,7 @@ int cp_file()
 	}
 
 	//open dst for WR
-	gd = open_file("tiny2", O_RDWR);	
+	//gd = open_file("tiny2", O_RDWR);	
 
 	while(n = read(fd, buf, BLKSIZE))
 	{
