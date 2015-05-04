@@ -35,7 +35,8 @@ int read_file()
 int myread(int fd, char *buf, int nbytes)
 {
 	int count = 0;
-	char *cq, buf2[BLKSIZE];
+	char *cq;
+	int buf2[BLKSIZE];
 	OFT* oftp; 
 	int lbk, blk, startByte, remain;
 	int ino;
@@ -67,7 +68,7 @@ int myread(int fd, char *buf, int nbytes)
 		{
 			//indirect blocks
 			//Gets the 255 cells and copies them into buf
-			get_block(mip->dev, mip->INODE.i_block[lbk], buf);
+			get_block(mip->dev, mip->INODE.i_block[lbk], buf2);
 			//You can them refernce them directly, but they start
 			//at 12
 			blk = buf[lbk - 12]; 
@@ -75,7 +76,7 @@ int myread(int fd, char *buf, int nbytes)
 		else
 		{
 			//double indirect blocks
-			get_block(mip->dev, mip->INODE.i_block[13], buf);
+			get_block(mip->dev, mip->INODE.i_block[13], buf2);
 			get_block(mip->dev, buf[((lbk - 12) / 256) - 1], buf2);
 			blk = buf2[(lbk - 12) - (256 * ((lbk - 12) / 256))];
 		}
